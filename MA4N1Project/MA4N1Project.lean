@@ -39,18 +39,18 @@ lemma x_mod_4_lt_4 {x : ℤ} : x % 4 < 4 := by
 --   ·
 --   done
 
-def n_odd (n : ℕ) : Prop := n % 2 = 1
-
-lemma n_odd_if_Odd {n : ℕ} (h : Odd n) : n % 2 = 1 := by
-  rcases h with ⟨k, hk⟩
-  rw [hk]
-
-  done
-
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
   refine Prime.odd_of_ne_two hp ?h_two
   norm_num
   exact Nat.ne_of_gt hp2
+  done
+
+lemma n_odd_if_Odd {n : ℕ} (h : Odd n) : n % 2 = 1 := by
+  rcases h with ⟨k, hk⟩
+  rw [hk]
+  rw [add_mod_of_add_mod_lt]
+  · simp only [mul_mod_right, one_mod, zero_add]
+  · simp only [mul_mod_right, one_mod, zero_add, lt_succ_self]
   done
 
 theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p > 2) (x : ℕ) : (x ^ 2 + 1) % p = 0 → p % 4 = 1 := by
@@ -62,7 +62,10 @@ theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p
   }
   have hp_odd : p % 2 = 1 := by
   {
-
+    sorry
+  }
+  {
+    sorry
   }
   done
 
