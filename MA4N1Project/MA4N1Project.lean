@@ -47,6 +47,7 @@ theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p :
   exact Nat.ne_of_gt hp2
   done
 
+
 -- Proving equivalence of different odd definitions
 lemma n_odd_if_Odd {n : ℕ} (h : Odd n) : n % 2 = 1 := by
   rcases h with ⟨k, hk⟩
@@ -62,8 +63,7 @@ theorem p_odd_then_one_or_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) �
   apply n_odd_if_Odd
   exact hp
   done
-
-
+  
 --
 theorem p_not_three_mod_four_implies_p_one_mod_four' {p : ℕ } (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
   have h_imp_equiv_or : (p % 4 = 1) ∨ (p % 4 = 3) := by
