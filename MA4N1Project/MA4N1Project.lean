@@ -16,6 +16,7 @@ lemma x_mod_4_lt_4 {x : ℤ} : x % 4 < 4 := by
   refine Int.emod_lt_of_pos x ?H
   norm_num
   done
+
     -- intro h_not_congruent_3
     -- have hmod : x % 4 = 0 ∨ x % 4 = 1 ∨ x % 4 = 2 ∨ x % 4 = 3
 
@@ -63,35 +64,15 @@ theorem p_odd_then_one_or_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) �
   apply n_odd_if_Odd
   exact hp
   done
-  
---
-theorem p_not_three_mod_four_implies_p_one_mod_four' {p : ℕ } (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
+
+-- For a prime number p if it is not congruent to 3 mod 4 then it is congruent to 1 mod 4
+theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Nat.Prime p) (hp2 : p > 2) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
   have h_imp_equiv_or : (p % 4 = 1) ∨ (p % 4 = 3) := by
   {
     apply p_odd_then_one_or_three_mod_four
-    exact hp
-  }
-  {
-
-  }
-  done
-
-
-variable {a b : Prop}
-
-theorem imp_to_or_not (h: a -> b) : ¬a ∨ b :=
-by
-  exact not_or_of_imp h
-  done
-
-variable {a b : Prop}
-
-
-theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
-  have h_imp_equiv_or : (p % 4 = 1) ∨ (p % 4 = 3) := by
-  {
-    apply p_odd_then_one_or_three_mod_four
-    exact hp
+    apply prime_gt_two_is_odd
+    assumption
+    assumption
   }
   {
     cases h_imp_equiv_or with
@@ -99,7 +80,6 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬
     | inr hp3 => exact fun a => (a hp3).elim
   }
   done
-
 
 -- For
 theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p > 2) (x : ℕ) : (x ^ 2 + 1) % p = 0 → p % 4 = 1 := by
@@ -118,34 +98,9 @@ theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p
   }
   done
 
+-- Another version of above
 theorem neg_1_square_mod {p : ℕ} (h : IsSquare (-1)) : p % 4 = 1 := by
-  have hp :
+  sorry
   done
-
--- theorem p_not_cong_3_mod_4_imp_cong_1_mod_4 {p : ℕ} (hp: Nat.Prime p) (hp2 : p > 2) : ¬(p % 4 = 3) → (p % 4 = 1) := by
---   have hp_odd : Odd p := by
---   {
---      apply prime_gt_two_is_odd
---      assumption
---      assumption
---   }
---   {
---     intro h_3_not_cong
---     have h_not_0 : p % 4 ≠ 0 := by
---     {
---       sorry
---     }
---     -- have h_not_1 : p % 4 ≠ 0 := by contradiction
---     have h_not_2 : p % 4 ≠ 2 :=
---     {
---       by_contradiction h
---       have hp_odd: Odd p := prime_gt_two_is_odd hp
-
-
-
---     }
---     have h_not_3 : p % 4 ≠ 3 := by assumption
---   }
---   done
 
 end TPwLDirichlet
