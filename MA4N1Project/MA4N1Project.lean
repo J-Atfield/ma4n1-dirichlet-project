@@ -117,7 +117,6 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p-1) / 2) := by
   rcases hp with ⟨k, hk⟩
   rw [hk, Nat.add_sub_cancel]
   rw [mul_comm, Nat.mul_div_cancel k]
-  -- Still need to prove the split fraction thing
   rw [mul_comm, split_fraction]
   rw [mul_comm, Nat.mul_div_cancel k]
   exact rfl
