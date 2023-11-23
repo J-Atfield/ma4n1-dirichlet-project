@@ -103,4 +103,27 @@ theorem neg_1_square_mod {p : ℕ} (h : IsSquare (-1)) : p % 4 = 1 := by
   sorry
   done
 
+-- variable (p : ℕ) [Fact p.Prime]
+
+theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := by
+  sorry
+  done
+
+
+
+/-- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`. -/
+theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p-1) / 2) := by
+  rcases hp with ⟨k, hk⟩
+  rw [hk, Nat.add_sub_cancel]
+  rw [mul_comm, Nat.mul_div_cancel k]
+  -- Still need to prove the split fraction thing
+  rw [mul_comm, split_fraction]
+  rw [mul_comm, Nat.mul_div_cancel k]
+  exact rfl
+  · exact Nat.two_pos
+  · exact Nat.two_pos
+  done
+
+
+
 end TPwLDirichlet
