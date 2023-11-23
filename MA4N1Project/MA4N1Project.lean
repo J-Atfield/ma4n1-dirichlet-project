@@ -106,7 +106,8 @@ theorem neg_1_square_mod {p : ℕ} (h : IsSquare (-1)) : p % 4 = 1 := by
 -- variable (p : ℕ) [Fact p.Prime]
 
 theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := by
-  sorry
+  refine Nat.add_div_of_dvd_right ?hca
+  exact Nat.dvd_mul_right 2 k
   done
 
 
@@ -120,8 +121,8 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p-1) / 2) := by
   rw [mul_comm, split_fraction]
   rw [mul_comm, Nat.mul_div_cancel k]
   exact rfl
-  · exact Nat.two_pos
-  · exact Nat.two_pos
+  · norm_num
+  · norm_num
   done
 
 
