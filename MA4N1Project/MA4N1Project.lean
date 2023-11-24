@@ -89,11 +89,10 @@ theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p
     norm_num
     exact Nat.ne_of_gt hp2
   }
-  have hp_odd : p % 2 = 1 := by
+  have hp_Odd : Odd p := by exact prime_gt_two_is_odd hp hp2
+  have hp_odd : p % 2 = 1 := by exact n_odd_if_Odd hp_Odd
   {
-    sorry
-  }
-  {
+    have hp_one_or_three : (p % 4 = 1) ∨ (p % 4 = 3) := by exact p_odd_then_one_or_three_mod_four hp_Odd
     sorry
   }
   done
@@ -101,6 +100,20 @@ theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p
 -- Another version of above
 theorem neg_1_square_mod {p : ℕ} (h : IsSquare (-1)) : p % 4 = 1 := by
   sorry
+  done
+
+theorem square_plus_one_implies_prime_mod_four' {p : ℕ} (hp : p.Prime) (hp2 : p > 2) (x : ℕ) (hp3 : (x ^ 2 + 1) % p = 0) : p % 4 = 1 := by
+  have hp_odd : p % 2 = 1 := by
+  {
+    have hp_Odd : Odd p := by
+    {
+      exact prime_gt_two_is_odd hp hp2
+    }
+    exact n_odd_if_Odd hp_Odd
+  }
+  {
+
+  }
   done
 
 variable (p : ℕ) [Fact p.Prime]
