@@ -124,11 +124,6 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
 -- legendreSym.eq_pow
 variable (p : ℕ) [Fact p.Prime]
 
-/-- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`. -/
-theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p-1) / 2) := by
-  sorry
-  done
-
 theorem eulers_criterion' (a : ℤ) (k : ℕ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
   rw[←odd_int_div]
 
