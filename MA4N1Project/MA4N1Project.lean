@@ -118,13 +118,11 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
   · norm_num
   done
 
-
-
 -- ZMod.euler_criterion_units
 -- legendreSym.eq_pow
 variable (p : ℕ) [Fact p.Prime]
 
-theorem eulers_criterion' (a : ℤ) (k : ℕ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
+theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
   rw[←odd_int_div]
 
   rw[legendreSym.eq_pow]
@@ -132,10 +130,6 @@ theorem eulers_criterion' (a : ℤ) (k : ℕ) (hp : Nat.Prime p) (hp2 : p > 2) :
   apply hp
   apply hp2
 
-  done
-
-theorem eulers_criterion'' (a : ℤ) (hp : p/2 = (p-1)/2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
-  rw[← hp, legendreSym.eq_pow]
   done
 
 end TPwLDirichlet
