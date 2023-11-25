@@ -124,12 +124,34 @@ variable (p : ℕ) [Fact p.Prime]
 
 theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
   rw[←odd_int_div]
-
   rw[legendreSym.eq_pow]
   apply prime_gt_two_is_odd
   apply hp
   apply hp2
 
   done
+
+
+theorem p_is_1_mod_4_part (hp : p > 2) : p % 4 = 1 -> (legendreSym p (-1) : ZMod p) = 1 := by
+  rw[eulers_criterion']
+  sorry
+  done
+
+theorem p_is_3_mod_4_part (hp : p > 2) : p % 4 = 3 -> (legendreSym p (-1) : ZMod p) = -1 := by
+  rw[eulers_criterion']
+  sorry
+  done
+
+-- Lemma 2.13
+theorem first_supplement_to_quadratic_reciprocity (hp : p > 2) : (p % 4 = 1 -> (legendreSym p (-1) : ZMod p) = 1) ∧ (p % 4 = 3 -> (legendreSym p (-1) : ZMod p) = -1) := by
+  apply And.intro
+  case right =>
+    apply p_is_3_mod_4_part
+    case hp => exact hp
+  case left =>
+    apply p_is_1_mod_4_part
+    case hp => exact hp
+  done
+
 
 end TPwLDirichlet
