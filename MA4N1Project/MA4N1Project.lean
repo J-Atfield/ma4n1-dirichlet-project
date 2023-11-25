@@ -134,13 +134,21 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
 
 theorem p_is_1_mod_4_part (hp : p > 2) : p % 4 = 1 -> (legendreSym p (-1) : ZMod p) = 1 := by
   rw[eulers_criterion']
+
   sorry
   done
+
+theorem p_is_1_mod_4_part' (k : ℕ) (hp : p > 2) (hp2 : p = 4 * k + 1) : (legendreSym p (-1) : ZMod p) = 1 := by
+  rw[eulers_criterion']
+  sorry
+  done
+
 
 theorem p_is_3_mod_4_part (hp : p > 2) : p % 4 = 3 -> (legendreSym p (-1) : ZMod p) = -1 := by
   rw[eulers_criterion']
   sorry
   done
+
 
 -- Lemma 2.13
 theorem first_supplement_to_quadratic_reciprocity (hp : p > 2) : (p % 4 = 1 -> (legendreSym p (-1) : ZMod p) = 1) ∧ (p % 4 = 3 -> (legendreSym p (-1) : ZMod p) = -1) := by
