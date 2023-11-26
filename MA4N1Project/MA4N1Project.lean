@@ -13,27 +13,6 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
   done
 
 
--- lemma x_not_cong_3_iff_cong_1_mod_4 {x : ℤ} : ¬(x ≡ 3 [ZMOD 4]) ↔ (x ≡ 1 [ZMOD 4]) := by
---   apply Iff.intro
---   · intro h
-
---   done
-
--- lemma x_not_cong_3_iff_cong_1_mod_4' {x : ℕ} : ¬(x ≡ 3 [MOD 4]) ↔ (x ≡ 1 [MOD 4]) := by
---   apply Iff.intro
---   {
---     intro h_not_congruent_3
-
---   }
---   done
-
--- lemma neq_one_quad_residue_mod_prime_iff_prime_cong_1_mod_4 {x : ℤ} {p : ℕ} (hp : p.Prime) (hp2 : p > 2) : x^2 + 1 ≡ 0 [ZMOD p] ↔ (p ≡ 1 [ZMOD 4]) := by
---   apply Iff.intro
---   · sorry
---   ·
---   done
-
-
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
   refine Prime.odd_of_ne_two hp ?h_two
@@ -78,27 +57,10 @@ theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p): (p %
   simp only
   done
 
-
--- For
-theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p > 2) (x : ℕ) : (x ^ 2 + 1) % p = 0 → p % 4 = 1 := by
-  intro h
-  have hp_ne_2 : p ≠ 2 := by
-  {
-    norm_num
-    exact Nat.ne_of_gt hp2
-  }
-  have hp_odd : p % 2 = 1 := by
-  {
-    sorry
-  }
-  {
-    sorry
-  }
-  done
-
 variable (p : ℕ) [Fact p.Prime]
-
-
+-- Lemma 2.14
+-- Proving the quadratic congruence x2 + 1 ≡ 0 mod p where p is an odd prime has a solution if and only if p ≡ 1 mod 4
+-- Showing the implication in the left direction (Is it Left or Right???)
 theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) → p % 4 = 1 := by
   rw[ZMod.exists_sq_eq_neg_one_iff]
   simp only [ne_eq]
@@ -108,6 +70,7 @@ theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : Z
   case hp2 => apply hp
   done
 
+-- Showing the implication in the right direction (Is it Left or Right???)
 theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
   have hp4 : ¬(p % 4 = 3) := by
   {
@@ -123,6 +86,7 @@ theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1
   exact hp4
   done
 
+-- Combining the left and riht implications to get an equality
 theorem neg_1_square_mod (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) ↔ p % 4 = 1 := by
   apply Iff.intro
   case mp =>
@@ -147,8 +111,7 @@ theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := 
   done
 
 
-/-- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`. -/
-
+-- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`.
 -- Proving that for odd or Prime (>2) p, p / 2 = (p - 1) / 2 for integer division
 theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
   rcases hp with ⟨k, hk⟩
