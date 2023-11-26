@@ -72,6 +72,12 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬
   }
   done
 
+theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p): (p % 4 = 1) -> ¬(p % 4 = 3) := by
+  intro h1
+  rw[h1]
+  simp only
+  done
+
 
 -- For
 theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p > 2) (x : ℕ) : (x ^ 2 + 1) % p = 0 → p % 4 = 1 := by
@@ -90,11 +96,48 @@ theorem square_plus_one_implies_prime_mod_four {p : ℕ} (hp : p.Prime) (hp2 : p
   }
   done
 
-theorem neg_1_square_mod {p : ℕ} (h : IsSquare (-1)) : p % 4 = 1 := by
-  sorry
+variable (p : ℕ) [Fact p.Prime]
+
+
+theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) → p % 4 = 1 := by
+  rw[ZMod.exists_sq_eq_neg_one_iff]
+  simp only [ne_eq]
+  apply p_not_three_mod_four_implies_p_one_mod_four
+  apply prime_gt_two_is_odd
+  case hp => apply hp2
+  case hp2 => apply hp
   done
 
-variable (p : ℕ) [Fact p.Prime]
+theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
+  have hp4 : ¬(p % 4 = 3) := by
+  {
+    apply p_one_mod_four_implies_p_not_three_mod_four
+    case a => apply hp3
+    apply prime_gt_two_is_odd
+    case hp2 => apply hp
+    case hp => apply hp2
+    done
+  }
+  rw[ZMod.exists_sq_eq_neg_one_iff]
+  simp only [ne_eq]
+  exact hp4
+  done
+
+theorem neg_1_square_mod (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) ↔ p % 4 = 1 := by
+  apply Iff.intro
+  case mp =>
+    apply neg_1_square_mod_left_imp
+    case hp => apply hp
+    case hp2 => apply hp2
+    done
+  case mpr =>
+    apply neg_1_square_mod_right_imp
+    case hp => apply hp
+    case hp2 => apply hp2
+    done
+  done
+
+
 
 -- Have a theorem which allows you to split the fraction and
 -- allow you to evaluate 1/2 to 0 with the integer division
