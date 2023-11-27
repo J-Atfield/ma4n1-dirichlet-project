@@ -76,7 +76,7 @@ variable (p : ℕ) [Fact p.Prime]
 -- Lemma 2.14
 -- Proving the quadratic congruence x^2 + 1 ≡ 0 mod p where p is an odd prime has a solution if and only if p ≡ 1 mod 4
 -- Showing the implication in the left direction (Is it Left or Right???)
-theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) → p % 4 = 1 := by
+theorem square_eq_neg_one_mod_p_imp_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) → p % 4 = 1 := by
   rw[ZMod.exists_sq_eq_neg_one_iff]
   simp only [ne_eq]
   apply p_not_three_mod_four_implies_p_one_mod_four
@@ -86,7 +86,7 @@ theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : Z
   done
 
 -- Showing the implication in the right direction (Is it Left or Right???)
-theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
+theorem p_eq_one_mod_four_imp_square_eq_neg_one_mod_p (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
   have hp4 : ¬(p % 4 = 3) := by
   {
     apply p_one_mod_four_implies_p_not_three_mod_four
@@ -102,15 +102,15 @@ theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1
   done
 
 -- Combining the left and right implications to get an equality
-theorem neg_1_square_mod (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) ↔ p % 4 = 1 := by
+theorem square_eq_neg_one_mod_p_iff_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) ↔ p % 4 = 1 := by
   apply Iff.intro
   case mp =>
-    apply neg_1_square_mod_left_imp
+    apply square_eq_neg_one_mod_p_imp_p_eq_one_mod_four
     case hp => apply hp
     case hp2 => apply hp2
     done
   case mpr =>
-    apply neg_1_square_mod_right_imp
+    apply p_eq_one_mod_four_imp_square_eq_neg_one_mod_p
     case hp => apply hp
     case hp2 => apply hp2
     done
