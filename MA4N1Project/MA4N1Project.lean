@@ -54,7 +54,15 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬
 theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p): (p % 4 = 1) -> ¬(p % 4 = 3) := by
   intro h1
   rw[h1]
-  simp only
+  exact ne_of_beq_eq_false rfl
+  done
+
+theorem p_one_mod_four_iff_p_not_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) ↔ ¬(p % 4 = 3) := by
+  apply Iff.intro
+  · apply p_one_mod_four_implies_p_not_three_mod_four
+    exact hp
+  · apply p_not_three_mod_four_implies_p_one_mod_four
+    exact hp
   done
 
 variable (p : ℕ) [Fact p.Prime]
