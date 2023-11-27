@@ -142,19 +142,30 @@ theorem neg_3_square_mod_6 (hp : p > 2) (hp2 : p.Prime): IsSquare (-3 : ZMod p) 
   sorry
   done
 
-theorem legendre_neg_3_p_eq_legendre_p_3 : legendreSym p (-3) = legendreSym 3 p := by
+theorem legendre_neg_3_p_eq_legendre_p_3 : (legendreSym p (-3) : ZMod p) = legendreSym 3 p := by
   rw[<-neg_one_mul]
   rw[legendreSym.mul]
+  rw[legendreSym.eq_pow]
 
   done
 
-theorem applying_legendre_mul: legendreSym p (-3) = legendreSym p (-1) * legendreSym p 3 := by
+theorem applying_legendre_mul: (legendreSym p (-3) : ZMod p) = (legendreSym p (-1) : ZMod p) * (legendreSym p 3 : ZMod p) := by
   rw[<-neg_one_mul]
   apply legendreSym.mul
   done
 
+theorem testing : (legendreSym p (-3) : ZMod p) = 0 := by
+  rw[legendreSym.eq_pow]
 
+  done
 
+theorem legendreAtNegOne : legendreSym p (-1) = 0 := by
+  rw[legendreSym.at_neg_one]
+  rw[ZMod.χ₄_eq_neg_one_pow]
+  sorry
+  done
+
+  theorem quadratic_
 
 
 
