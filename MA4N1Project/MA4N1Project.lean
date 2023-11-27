@@ -41,8 +41,8 @@ theorem p_odd_then_one_or_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) �
   exact hp
   done
 
--- Provind that if p is odd, and also not congruent to 3 mod 4, then it is congruent to 1 mod 4
-theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
+-- Proving that if p is odd and is not congruent to 3 mod 4, then it is congruent to 1 mod 4
+theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ} (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
   have h_imp_equiv_or : (p % 4 = 1) ∨ (p % 4 = 3) := by
   {
     apply p_odd_then_one_or_three_mod_four
@@ -55,7 +55,7 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ } (hp : Odd p) : ¬
   }
   done
 
--- Provind that if p is odd, and also not congruent to 1 mod 4, then it is congruent to 3 mod 4
+-- Proving that if p is odd and congruent to 1 mod 4, then it is not congruent to 3 mod 4
 theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p): (p % 4 = 1) -> ¬(p % 4 = 3) := by
   intro h1
   rw[h1]
@@ -74,7 +74,7 @@ theorem p_one_mod_four_iff_p_not_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 
 variable (p : ℕ) [Fact p.Prime]
 
 -- Lemma 2.14
--- Proving the quadratic congruence x2 + 1 ≡ 0 mod p where p is an odd prime has a solution if and only if p ≡ 1 mod 4
+-- Proving the quadratic congruence x^2 + 1 ≡ 0 mod p where p is an odd prime has a solution if and only if p ≡ 1 mod 4
 -- Showing the implication in the left direction (Is it Left or Right???)
 theorem neg_1_square_mod_left_imp (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) → p % 4 = 1 := by
   rw[ZMod.exists_sq_eq_neg_one_iff]
@@ -146,7 +146,6 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply prime_gt_two_is_odd
   apply hp
   apply hp2
-
   done
 
 end TPwLDirichlet
