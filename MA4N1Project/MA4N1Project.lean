@@ -86,7 +86,7 @@ theorem neg_1_square_mod_right_imp (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1
   exact hp4
   done
 
--- Combining the left and riht implications to get an equality
+-- Combining the left and right implications to get an equality
 theorem neg_1_square_mod (hp : p > 2) (hp2 : p.Prime): IsSquare (-1 : ZMod p) ↔ p % 4 = 1 := by
   apply Iff.intro
   case mp =>
@@ -126,8 +126,6 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
 
 -- ZMod.euler_criterion_units
 -- legendreSym.eq_pow
-variable (p : ℕ) [Fact p.Prime]
-
 theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
   rw[←odd_int_div]
 
@@ -137,5 +135,27 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply hp2
 
   done
+
+-- Special Case p = 6k + 1
+---------------------------------------------
+theorem neg_3_square_mod_6 (hp : p > 2) (hp2 : p.Prime): IsSquare (-3 : ZMod p) ↔ p % 6 = 1 := by
+  sorry
+  done
+
+theorem legendre_neg_3_p_eq_legendre_p_3 : legendreSym p (-3) = legendreSym 3 p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+
+  done
+
+theorem applying_legendre_mul: legendreSym p (-3) = legendreSym p (-1) * legendreSym p 3 := by
+  rw[<-neg_one_mul]
+  apply legendreSym.mul
+  done
+
+
+
+
+
 
 end TPwLDirichlet
