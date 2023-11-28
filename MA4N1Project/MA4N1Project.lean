@@ -138,6 +138,8 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
 
 -- Special Case p = 6k + 1
 ---------------------------------------------
+variable (q : ℕ) [Fact q.Prime]
+
 theorem neg_3_square_mod_6 (hp : p > 2) (hp2 : p.Prime): IsSquare (-3 : ZMod p) ↔ p % 6 = 1 := by
   sorry
   done
@@ -149,12 +151,27 @@ theorem legendre_neg_3_p_eq_legendre_p_3 : (legendreSym p (-3) : ZMod p) = legen
 
   done
 
-theorem applying_legendre_mul: (legendreSym p (-3) : ZMod p) = (legendreSym p (-1) : ZMod p) * (legendreSym p 3 : ZMod p) := by
-  rw[<-neg_one_mul]
-  apply legendreSym.mul
+theorem applying_legendre_mul: (legendreSym p ((-1) * 3) : ZMod p) = (legendreSym p (-1) : ZMod p) * (legendreSym p 3 : ZMod p) := by
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
   done
 
-theorem testing : (legendreSym p (-3) : ZMod p) = 0 := by
+
+theorem three_div_two : q = 3 -> q / 2 = 1 := by
+  intro hp
+  rw [hp]
+  simp only
+  done
+
+theorem testing (hp : q = 3) (hp2 : Odd p): legendreSym p q = (-1)^((p-1)/2) * legendreSym q p := by
+  rw[legendreSym.quadratic_reciprocity']
+  rw [three_div_two, one_mul]
+  rw [odd_int_div]
+  apply hp2
+  case a => exact hp
+  done
+
+theorem testing' : (legendreSym p (-3) : ZMod p) = 0 := by
   rw[legendreSym.eq_pow]
 
   done
@@ -165,7 +182,7 @@ theorem legendreAtNegOne : legendreSym p (-1) = 0 := by
   sorry
   done
 
-  theorem quadratic_
+
 
 
 
