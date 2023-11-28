@@ -8,7 +8,7 @@ open Polynomial
 
 -- Creating a definition for infinitely many in lean
 -- There are various ways to repsent this, therefore additional versions of this will be defined
-def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, Nat.Prime p ∧ p > n
+def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, Nat.Prime p ∧ p ≥ n
 
 
 -- [Someone write something for this]
@@ -146,6 +146,18 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply prime_gt_two_is_odd
   apply hp
   apply hp2
+  done
+
+theorem inf_p_4k_plus_one {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : exists_infinitely_many_P ∧ p = 4*k+1 := by
+  have hp_odd : Odd p := by
+    {
+      apply prime_gt_two_is_odd
+      exact hp
+      exact hp2
+    }
+  apply And.intro
+  case right =>
+    apply Nat.exists_infinite_primes
   done
 
 end TPwLDirichlet
