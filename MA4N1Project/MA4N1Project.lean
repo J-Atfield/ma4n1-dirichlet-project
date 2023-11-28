@@ -151,19 +151,13 @@ theorem legendre_neg_3_p_eq_legendre_p_3 : (legendreSym p (-3) : ZMod p) = legen
 
   done
 
-theorem applying_legendre_mul: (legendreSym p ((-1) * 3) : ZMod p) = (legendreSym p (-1) : ZMod p) * (legendreSym p 3 : ZMod p) := by
-  rw[legendreSym.mul]
-  simp only [Int.cast_mul]
-  done
-
-
 theorem three_div_two : q = 3 -> q / 2 = 1 := by
   intro hp
   rw [hp]
   simp only
   done
 
-theorem testing (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): legendreSym p q = (-1)^((p-1)/2) * legendreSym q p := by
+theorem legendre_p_q_recip_application (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): legendreSym p q = (-1)^((p-1)/2) * legendreSym q p := by
   rw[legendreSym.quadratic_reciprocity']
   rw [three_div_two, one_mul]
   rw [odd_int_div]
@@ -180,6 +174,15 @@ theorem testing (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): legendreSym p q = (-1)
     case h => exact hp3
     done
   done
+
+theorem applying_legendre_mul: (legendreSym p ((-1) * 3) : ZMod p) = (legendreSym p (-1) : ZMod p) * (legendreSym p 3 : ZMod p) := by
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  done
+
+
+
+
 
 
 
