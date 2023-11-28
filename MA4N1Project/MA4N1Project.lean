@@ -163,13 +163,25 @@ theorem three_div_two : q = 3 -> q / 2 = 1 := by
   simp only
   done
 
-theorem testing (hp : q = 3) (hp2 : Odd p): legendreSym p q = (-1)^((p-1)/2) * legendreSym q p := by
+theorem testing (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): legendreSym p q = (-1)^((p-1)/2) * legendreSym q p := by
   rw[legendreSym.quadratic_reciprocity']
   rw [three_div_two, one_mul]
   rw [odd_int_div]
   apply hp2
   case a => exact hp
+  case hp =>
+    simp only [ne_eq]
+    rw [hp]
+    simp only
+    done
+  case hq =>
+    simp only [ne_eq]
+    apply Nat.ne_of_gt
+    case h => exact hp3
+    done
   done
+
+
 
 theorem testing' : (legendreSym p (-3) : ZMod p) = 0 := by
   rw[legendreSym.eq_pow]
