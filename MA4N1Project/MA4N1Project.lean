@@ -148,7 +148,11 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply hp2
   done
 
-lemma rearrange {p k : ℕ} (h : Nat.Prime p): (p - 1) / 4 = k → p = 4*k + 1 := by
+lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
+  have h_p_ne_3 : p ≠ 3 := by
+  {
+    sorry
+  }
   intro h2
   have h3 : 4*((p-1) / 4) + 1 = p := by
   {
