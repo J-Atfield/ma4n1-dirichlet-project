@@ -158,7 +158,7 @@ theorem three_div_two : q = 3 -> q / 2 = 1 := by
   simp only
   done
 
-theorem legendre_p_q_recip_application (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): (legendreSym p q : ZMod p) = (-1)^((p-1)/2) * (legendreSym q p : ZMod p) := by
+theorem legendre_p_q_recip_application_with_three (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): (legendreSym p q : ZMod p) = (-1)^((p-1)/2) * (legendreSym q p : ZMod p) := by
   rw[legendreSym.quadratic_reciprocity']
   rw [three_div_two, one_mul]
   rw [odd_int_div]
@@ -175,15 +175,6 @@ theorem legendre_p_q_recip_application (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2):
     apply Nat.ne_of_gt
     case h => exact hp3
     done
-  done
-
-
-theorem neg_one_pow_odd_is_neg_one (hp : Odd n) : (-1) ^ n = -1 := by
-  exact Odd.neg_one_pow hp
-  done
-
-theorem neg_one_pow_even_is_pos_one (hp : Even n) : (-1) ^ n = 1 := by
-  exact Even.neg_one_pow hp
   done
 
 theorem p_eq_one_mod_four_is_even (k : ℕ)(hp : p = 4 * k + 1) : Even ((p - 1) / 2) := by
@@ -209,7 +200,7 @@ theorem p_eq_three_mod_four_is_odd (k : ℕ)(hp : p = 4 * k + 3) : Odd ((p - 1) 
   done
 
 
-theorem pos_one_even (k : ℕ) (hp2 : p' % 4 = 1) : (1 : ZMod p) = (-1) ^ ((p' - 1) / 2) := by
+theorem neg_one_pow_one_mod_four_is_pos (k : ℕ) (hp2 : p' % 4 = 1) : (1 : ZMod p) = (-1) ^ ((p' - 1) / 2) := by
 
   have new_hp : p' = (4 * k + 1) := by
   {
@@ -226,7 +217,7 @@ theorem pos_one_even (k : ℕ) (hp2 : p' % 4 = 1) : (1 : ZMod p) = (-1) ^ ((p' -
   exact (Even.neg_one_pow hp).symm
   done
 
-theorem neg_one_odd (k : ℕ) (hp2 : p' % 4 = 3) : (-1 : ZMod p) = ((-1) ^ ((p' - 1) / 2)) := by
+theorem neg_one_pow_three_mod_four_is_neg (k : ℕ) (hp2 : p' % 4 = 3) : (-1 : ZMod p) = ((-1) ^ ((p' - 1) / 2)) := by
   have new_hp : p' = (4 * k + 3) := by
   {
     rw[<-jacks_proof_for_mod_four_is_three]
@@ -245,7 +236,7 @@ theorem neg_one_odd (k : ℕ) (hp2 : p' % 4 = 3) : (-1 : ZMod p) = ((-1) ^ ((p' 
 theorem equal_for_p_mod_four_eq_one (hp : (p % 4 = 1)) (hp2 : p > 2)  : (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
   rw [legendreSym.at_neg_one]
   rw [χ₄_nat_one_mod_four hp]
-  rw[<-pos_one_even]
+  rw[<-neg_one_pow_one_mod_four_is_pos]
   simp only [Int.cast_one]
   case hp2 => exact hp
   apply p
@@ -255,7 +246,7 @@ theorem equal_for_p_mod_four_eq_one (hp : (p % 4 = 1)) (hp2 : p > 2)  : (legendr
 theorem equal_for_p_mod_four_eq_three (hp : (p % 4 = 3)) (hp2 : p > 2)  : (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
   rw [legendreSym.at_neg_one]
   rw [χ₄_nat_three_mod_four hp]
-  rw[<-neg_one_odd]
+  rw[<-neg_one_pow_three_mod_four_is_neg]
   simp only [Int.cast_neg, Int.cast_one]
   case hp2 => exact hp
   apply p
@@ -263,7 +254,7 @@ theorem equal_for_p_mod_four_eq_three (hp : (p % 4 = 3)) (hp2 : p > 2)  : (legen
   done
 
 theorem both_are_equal (hp : p > 2) (hp2 : Nat.Prime p): (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
-  have mod_one_or_four : (p % 4 = 1) ∨ (p % 4 = 3) := by
+  have one_or_three_mod_four : (p % 4 = 1) ∨ (p % 4 = 3) := by
   {
     apply p_odd_then_one_or_three_mod_four
     apply prime_gt_two_is_odd
@@ -272,7 +263,7 @@ theorem both_are_equal (hp : p > 2) (hp2 : Nat.Prime p): (legendreSym p (-1) : Z
     done
   }
 
-  cases mod_one_or_four with
+  cases one_or_three_mod_four with
     | inl hp2 =>
       rw[equal_for_p_mod_four_eq_one]
       case inl.hp2 => exact hp
@@ -316,7 +307,7 @@ theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.P
   rw[<-neg_one_mul]
   rw[legendreSym.mul]
   simp only [Int.cast_mul]
-  rw[legendre_p_q_recip_application]
+  rw[legendre_p_q_recip_application_with_three]
   rw[<-mul_assoc]
   rw[legendre_multiplied_is_one]
   simp only [one_mul]
