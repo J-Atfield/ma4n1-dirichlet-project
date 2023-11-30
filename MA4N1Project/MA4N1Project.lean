@@ -175,12 +175,36 @@ theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1 {p : ℕ} (hp : p.Prime) : (p % 4 = 1)
       apply h_mod_equiv
       refine one_le_iff_ne_zero.mpr ?_
       exact Nat.Prime.ne_zero hp
+    have test : ∃ (k : ℕ), p-1=k*4 := by
+      apply exists_eq_mul_left_of_dvd
+      exact h_four_div_p_minus_one
     have h_p_minus_one_eq_4k : p - 1 = 4*k := by
-      -- apply dvd_iff_exists_eq_mul_left 4 p-1
-      refine Nat.eq_mul_of_div_eq_right h_four_div_p_minus_one ?H2
-      sorry
+      rw [mul_comm]
+
     rw [← h_p_minus_one_eq_4k]
     exact (succ_pred_prime hp).symm
+  done
+
+theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
+  apply Iff.intro
+  case mpr =>
+    intro h_4k_1
+    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    exact rfl
+  case mp =>
+    intro hp_mod_4
+    have h_mod_equiv : 1 ≡ p [MOD 4] := by
+      rw [← hp_mod_4]
+      exact mod_modEq p 4
+    have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
+    have test : ∃ (k : ℕ), p-1=k*4 := by
+      apply exists_eq_mul_left_of_dvd
+      exact h_four_div_p_minus_one
+
   done
 
 theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : exists_infinitely_many_P ∧ p = 4*k+1 := by
