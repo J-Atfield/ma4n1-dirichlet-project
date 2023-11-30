@@ -149,15 +149,12 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   done
 
 lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
-  have h_p_ne_3 : p ≠ 3 := by
-  {
-    sorry
-  }
   intro h2
   have h3 : 4*((p-1) / 4) + 1 = p := by
   {
-    rw [mul_comm]
-    sorry
+    rw [← hp]
+    rw [← div_eq_sub_mod_div, add_comm]
+    apply mod_add_div p 4
   }
   rw [← h3, ← h2]
   done
@@ -181,7 +178,7 @@ theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1 {p : ℕ} (hp : p.Prime) : (p % 4 = 1)
     have h_p_minus_one_eq_4k : p - 1 = 4*k := by
       -- apply dvd_iff_exists_eq_mul_left 4 p-1
       refine Nat.eq_mul_of_div_eq_right h_four_div_p_minus_one ?H2
-      rw [rearrange]
+      sorry
     rw [← h_p_minus_one_eq_4k]
     exact (succ_pred_prime hp).symm
   done
