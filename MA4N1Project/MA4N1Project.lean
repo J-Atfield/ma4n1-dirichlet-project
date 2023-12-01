@@ -152,6 +152,58 @@ theorem jacks_proof_for_mod_four_is_three : (p % 4 = 3) ↔ (p = 4 * k + 3) := b
   sorry
   done
 
+
+lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
+  intro h2
+  have h3 : 4*((p-1) / 4) + 1 = p := by
+  {
+    rw [← hp]
+    rw [← div_eq_sub_mod_div, add_comm]
+    apply mod_add_div p 4
+  }
+  rw [← h3, ← h2]
+  done
+
+theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1 {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (p = 4*k + 1) := by
+  apply Iff.intro
+  case mpr =>
+    intro h_4k_1
+    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    exact rfl
+  case mp =>
+    intro hp_mod_4
+    have h_mod_equiv : 1 ≡ p [MOD 4] := by
+      rw [← hp_mod_4]
+      exact mod_modEq p 4
+    have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
+    have h_p_minus_one_eq_4k : p - 1 = 4*k := by
+      -- apply dvd_iff_exists_eq_mul_left 4 p-1
+      refine Nat.eq_mul_of_div_eq_right h_four_div_p_minus_one ?H2
+
+      rw[rearrange hp]
+
+
+      done
+    rw [← h_p_minus_one_eq_4k]
+    exact (succ_pred_prime hp).symm
+  done
+
+
+
+
+
+
+
+
+
+
+
+
+
 theorem three_div_two : q = 3 -> q / 2 = 1 := by
   intro hp
   rw [hp]
@@ -185,6 +237,8 @@ theorem p_eq_one_mod_four_is_even (k : ℕ)(hp : p = 4 * k + 1) : Even ((p - 1) 
   simp only [mul_mod_right, Nat.zero_div]
   done
 
+
+
 theorem split_fraction_4 {k : ℕ} : (4 * k + 2) / 2 = ((4 * k) / 2) + 1 := by
   refine add_div_right (4 * k) ?H
   simp only
@@ -198,6 +252,7 @@ theorem p_eq_three_mod_four_is_odd (k : ℕ)(hp : p = 4 * k + 3) : Odd ((p - 1) 
   rw [@even_div]
   simp only [mul_mod_right, Nat.zero_div]
   done
+
 
 
 theorem neg_one_pow_one_mod_four_is_pos (k : ℕ) (hp2 : p' % 4 = 1) : (1 : ZMod p) = (-1) ^ ((p' - 1) / 2) := by
