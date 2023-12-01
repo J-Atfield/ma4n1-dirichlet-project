@@ -148,4 +148,63 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply hp2
   done
 
+
+theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2) = 1) ↔ (∃ (k : ℕ), p = (n+2)*k + 1) := by
+  apply Iff.intro
+  case mpr =>
+    simp only [forall_exists_index]
+    intro k h_nk_1
+    rw [h_nk_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    apply one_mod
+  case mp =>
+    intro hp_mod_n_plus_2
+    have h_mod_equiv : 1 ≡ p [MOD (n+2)] := by
+      rw [← hp_mod_n_plus_2]
+      exact mod_modEq p (n+2)
+    have h_n_plus_2_div_p_minus_one : (n + 2) ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
+    have test : ∃ (k : ℕ), p-1=k*(n+2) := by
+      apply exists_eq_mul_left_of_dvd
+      exact h_n_plus_2_div_p_minus_one
+    cases test with
+    | intro k h =>
+      use k
+      rw [mul_comm]
+      have : 1 ≤ p := by
+      {
+        rw [@one_le_iff_ne_zero]
+        exact Nat.Prime.ne_zero hp
+      }
+      exact Nat.eq_add_of_sub_eq this h
+  done
+
+
+-- Now we will now prove that if p ≡ 1 [MOD 3] and p ≡ 1 [MOD 2] then p ≡ 1 [MOD 6]
+
+theorem p_mod_three_and_two_iff_p_mod_six {p : ℕ} (h : Nat.Coprime 3 2): (p ≡ 1 [MOD 3]) ∧ (p ≡ 1 [MOD 2]) ↔ (p ≡ 1 [MOD 6]) := by
+  rw[modEq_and_modEq_iff_modEq_mul h]
+  done
+
+-- Now we will use this to prove that if p ≡ 1 [MOD 6] then p = 6k + 1
+
+theorem p_mod_six_eq_one_iff_p_eq_sixk_plus_one {p : ℕ} (hp : p.Prime) : (p % 6 = 1) ↔ (∃ (k : ℕ), p = 6*k + 1) := by
+  apply p_mod_n_eq_one_iff_p_eq_nk_plus_1'
+  exact hp
+  done
+
+--- Now we need to show that p ≡ 1 [MOD 6] is equivalent to p % 6 = 1
+
+theorem p_mod_six_eq_one_iff_p_mod_six_eq_one {p : ℕ} (hp : p.Prime) : (p % 6 = 1) = (p ≡ 1 [MOD 6]) := by
+  rename_i p_1 inst
+  simp_all only [eq_iff_iff]
+  apply Iff.intro
+  · intro a
+    exact a
+  · intro a
+    exact a
+  done
+
 end TPwLDirichlet
