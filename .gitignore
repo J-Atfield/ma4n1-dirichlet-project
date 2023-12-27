@@ -1,2 +1,6 @@
 /build
+/lakefile.lean/
+/lakefile.olean/
+/lean-toolchain/
 /lake-packages/*
+/.lake/*
