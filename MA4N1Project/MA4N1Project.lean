@@ -140,238 +140,68 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
 ---------------------------------------------
 variable (q : ℕ) [Fact q.Prime]
 
-theorem neg_3_square_mod_6 (hp : p > 2) (hp2 : p.Prime): IsSquare (-3 : ZMod p) ↔ p % 6 = 1 := by
-  sorry
-  done
-
-theorem jacks_proof_for_mod_four_is_one : (p % 4 = 1) ↔ (p = 4 * k + 1) := by
-  sorry
-  done
-
-theorem jacks_proof_for_mod_four_is_three : (p % 4 = 3) ↔ (p = 4 * k + 3) := by
-  sorry
-  done
-
-
-lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
-  intro h2
-  have h3 : 4*((p-1) / 4) + 1 = p := by
-  {
-    rw [← hp]
-    rw [← div_eq_sub_mod_div, add_comm]
-    apply mod_add_div p 4
-  }
-  rw [← h3, ← h2]
-  done
-
-theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1 {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (p = 4*k + 1) := by
-  apply Iff.intro
-  case mpr =>
-    intro h_4k_1
-    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
-    exact rfl
-  case mp =>
-    intro hp_mod_4
-    have h_mod_equiv : 1 ≡ p [MOD 4] := by
-      rw [← hp_mod_4]
-      exact mod_modEq p 4
-    have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
-      rw [← modEq_iff_dvd']
-      apply h_mod_equiv
-      refine one_le_iff_ne_zero.mpr ?_
-      exact Nat.Prime.ne_zero hp
-    have h_p_minus_one_eq_4k : p - 1 = 4*k := by
-      -- apply dvd_iff_exists_eq_mul_left 4 p-1
-      refine Nat.eq_mul_of_div_eq_right h_four_div_p_minus_one ?H2
-
-      rw[rearrange hp]
-
-
-      done
-    rw [← h_p_minus_one_eq_4k]
-    exact (succ_pred_prime hp).symm
-  done
-
-
-
-
-
-
-
-
-
-
-
-
-
-theorem three_div_two : q = 3 -> q / 2 = 1 := by
-  intro hp
-  rw [hp]
-  simp only
-  done
-
-theorem legendre_p_q_recip_application_with_three (hp : q = 3) (hp2 : Odd p) (hp3 : p > 2): (legendreSym p q : ZMod p) = (-1)^((p-1)/2) * (legendreSym q p : ZMod p) := by
-  rw[legendreSym.quadratic_reciprocity']
-  rw [three_div_two, one_mul]
-  rw [odd_int_div]
-  simp only [ge_iff_le, odd_iff_not_even, Int.cast_mul, Int.cast_pow, Int.cast_neg, Int.cast_one]
-  apply hp2
-  case a => exact hp
-  case hp =>
-    simp only [ne_eq]
-    rw [hp]
-    simp only
-    done
-  case hq =>
-    simp only [ne_eq]
-    apply Nat.ne_of_gt
-    case h => exact hp3
-    done
-  done
-
-theorem p_eq_one_mod_four_is_even (k : ℕ)(hp : p = 4 * k + 1) : Even ((p - 1) / 2) := by
-  rw[hp]
-  simp only [ge_iff_le, add_le_iff_nonpos_left, nonpos_iff_eq_zero, _root_.mul_eq_zero, false_or,
-    add_tsub_cancel_right]
-  rw [@even_div]
-  simp only [mul_mod_right, Nat.zero_div]
-  done
-
-
-
-theorem split_fraction_4 {k : ℕ} : (4 * k + 2) / 2 = ((4 * k) / 2) + 1 := by
-  refine add_div_right (4 * k) ?H
-  simp only
-  done
-
-theorem p_eq_three_mod_four_is_odd (k : ℕ)(hp : p = 4 * k + 3) : Odd ((p - 1) / 2) := by
-  rw [hp]
-  rw [add_succ_sub_one]
-  rw[split_fraction_4]
-  refine Even.add_one ?h
-  rw [@even_div]
-  simp only [mul_mod_right, Nat.zero_div]
-  done
-
-
-
-theorem neg_one_pow_one_mod_four_is_pos (k : ℕ) (hp2 : p' % 4 = 1) : (1 : ZMod p) = (-1) ^ ((p' - 1) / 2) := by
-
-  have new_hp : p' = (4 * k + 1) := by
-  {
-    rw[<-jacks_proof_for_mod_four_is_one]
-    ·exact hp2
-  }
-
-  have hp : Even ((p' - 1) / 2) := by
-  {
-    apply p_eq_one_mod_four_is_even
-    case hp => exact new_hp
-    done
-  }
-  exact (Even.neg_one_pow hp).symm
-  done
-
-theorem neg_one_pow_three_mod_four_is_neg (k : ℕ) (hp2 : p' % 4 = 3) : (-1 : ZMod p) = ((-1) ^ ((p' - 1) / 2)) := by
-  have new_hp : p' = (4 * k + 3) := by
-  {
-    rw[<-jacks_proof_for_mod_four_is_three]
-    ·exact hp2
-  }
-
-  have hp : Odd ((p' - 1) / 2) := by
-  {
-    apply p_eq_three_mod_four_is_odd
-    case hp => exact new_hp
-    done
-  }
-  exact (Odd.neg_one_pow hp).symm
-  done
-
-theorem equal_for_p_mod_four_eq_one (hp : (p % 4 = 1)) (hp2 : p > 2)  : (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
-  rw [legendreSym.at_neg_one]
-  rw [χ₄_nat_one_mod_four hp]
-  rw[<-neg_one_pow_one_mod_four_is_pos]
-  simp only [Int.cast_one]
-  case hp2 => exact hp
-  apply p
-  exact Nat.ne_of_gt hp2
-  done
-
-theorem equal_for_p_mod_four_eq_three (hp : (p % 4 = 3)) (hp2 : p > 2)  : (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
-  rw [legendreSym.at_neg_one]
-  rw [χ₄_nat_three_mod_four hp]
-  rw[<-neg_one_pow_three_mod_four_is_neg]
-  simp only [Int.cast_neg, Int.cast_one]
-  case hp2 => exact hp
-  apply p
-  exact Nat.ne_of_gt hp2
-  done
-
-theorem both_are_equal (hp : p > 2) (hp2 : Nat.Prime p): (legendreSym p (-1) : ZMod p) = ((-1) ^ ((p - 1) / 2)) := by
-  have one_or_three_mod_four : (p % 4 = 1) ∨ (p % 4 = 3) := by
-  {
-    apply p_odd_then_one_or_three_mod_four
-    apply prime_gt_two_is_odd
-    case hp.hp2 => exact hp
-    case hp.hp => exact hp2
-    done
-  }
-
-  cases one_or_three_mod_four with
-    | inl hp2 =>
-      rw[equal_for_p_mod_four_eq_one]
-      case inl.hp2 => exact hp
-      case inl.hp => exact hp2
-      done
-    | inr hp3 =>
-      rw[equal_for_p_mod_four_eq_three]
-      case inr.hp2 => exact hp
-      case inr.hp => exact hp3
-      done
-  done
-
-theorem legendre_multiplied_is_one (hp : p > 2) (hp2 : Nat.Prime p) : (legendreSym p (-1) : ZMod p) * ((-1) ^ ((p - 1) / 2)) = 1 := by
-  rw[<-both_are_equal]
-  have hp : legendreSym p (-1) = 1 ∨ legendreSym p (-1) = -1 := by
-  {
-    apply legendreSym.eq_one_or_neg_one
-    simp only [Int.cast_neg, Int.cast_one, ne_eq, neg_eq_zero, one_ne_zero, not_false_eq_true]
-    done
-  }
-  cases hp with
-  | inl hp2 =>
-    rw[hp2]
-    simp only [Int.cast_one, mul_one]
-    done
-  | inr hp3 =>
-    rw[hp3]
-    simp only [Int.cast_neg, Int.cast_one, mul_neg, mul_one, neg_neg]
-    done
-  case hp => exact hp
-  case hp2 => exact hp2
-  done
-
-theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
-  have hp4 : Odd p := by
-  {
-    apply prime_gt_two_is_odd
-    case hp => exact hp3
-    case hp2 => exact hp2
-  }
+theorem legendre_neg_3_p_eq_legendre_p_3_three_mod_four (hp : q = 3) (hp2 : p > 2) (hp4 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
   rw[<-neg_one_mul]
   rw[legendreSym.mul]
   simp only [Int.cast_mul]
-  rw[legendre_p_q_recip_application_with_three]
-  rw[<-mul_assoc]
-  rw[legendre_multiplied_is_one]
-  simp only [one_mul]
-  case hp => exact hp2
-  case hp2 => exact hp3
-  case hp3 => exact hp2
-  case hp => exact hp
-  case hp2 => exact hp4
+  rw[legendreSym.quadratic_reciprocity_three_mod_four]
+  simp only [Int.cast_neg, mul_neg]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_three_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp4
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => rename_i inst inst_1
+             aesop_subst hp
+             simp_all only [gt_iff_lt, odd_iff_not_even]
+  case hq => exact hp4
   done
 
+theorem legendre_neg_3_p_eq_legendre_p_3_one_mod_four (hp : q = 3) (hp2 : p > 2) (hp4 : p % 4 = 1) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  rw[<-legendreSym.quadratic_reciprocity_one_mod_four]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_one_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp4
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => exact hp4
+  case hq => rename_i inst inst_1
+             aesop_subst hp
+             simp_all only [gt_iff_lt]
+  done
+
+
+theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  have hp4 : (p % 4 = 1) ∨ (p % 4 = 3) := by
+  {
+    apply p_odd_then_one_or_three_mod_four
+    apply prime_gt_two_is_odd
+    case hp.hp => exact hp3
+    case hp.hp2 => exact hp2
+    done
+  }
+  cases hp4 with
+  | inl hp4 =>
+    rw[legendre_neg_3_p_eq_legendre_p_3_one_mod_four]
+    case inl.hp => exact hp
+    case inl.hp2 => exact hp2
+    case inl.hp4 => exact hp4
+    done
+  | inr hp4 =>
+    rw[legendre_neg_3_p_eq_legendre_p_3_three_mod_four]
+    case inr.hp => exact hp
+    case inr.hp2 => exact hp2
+    case inr.hp4 => exact hp4
+    done
+  done
 
 end TPwLDirichlet
