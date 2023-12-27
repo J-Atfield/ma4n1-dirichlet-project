@@ -148,4 +148,73 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply hp2
   done
 
+
+
+variable (q : ℕ) [Fact q.Prime]
+
+theorem legendre_neg_3_p_eq_legendre_p_3_three_mod_four (hp : q = 3) (hp2 : p > 2) (hp4 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  rw[legendreSym.quadratic_reciprocity_three_mod_four]
+  simp only [Int.cast_neg, mul_neg]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_three_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp4
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => rename_i inst inst_1
+             aesop_subst hp
+             simp_all only [gt_iff_lt, odd_iff_not_even]
+  case hq => exact hp4
+  done
+
+theorem legendre_neg_3_p_eq_legendre_p_3_one_mod_four (hp : q = 3) (hp2 : p > 2) (hp4 : p % 4 = 1) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  rw[<-legendreSym.quadratic_reciprocity_one_mod_four]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_one_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp4
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => exact hp4
+  case hq => rename_i inst inst_1
+             aesop_subst hp
+             simp_all only [gt_iff_lt]
+  done
+
+
+theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  have hp4 : (p % 4 = 1) ∨ (p % 4 = 3) := by
+  {
+    apply p_odd_then_one_or_three_mod_four
+    apply prime_gt_two_is_odd
+    case hp.hp => exact hp3
+    case hp.hp2 => exact hp2
+    done
+  }
+  cases hp4 with
+  | inl hp4 =>
+    rw[legendre_neg_3_p_eq_legendre_p_3_one_mod_four]
+    case inl.hp => exact hp
+    case inl.hp2 => exact hp2
+    case inl.hp4 => exact hp4
+    done
+  | inr hp4 =>
+    rw[legendre_neg_3_p_eq_legendre_p_3_three_mod_four]
+    case inr.hp => exact hp
+    case inr.hp2 => exact hp2
+    case inr.hp4 => exact hp4
+    done
+  done
+
+
 end TPwLDirichlet
