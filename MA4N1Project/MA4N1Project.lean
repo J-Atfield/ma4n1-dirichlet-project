@@ -8,7 +8,7 @@ open Polynomial
 
 -- Creating a definition for infinitely many in lean
 -- There are various ways to repsent this, therefore additional versions of this will be defined
-def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, Nat.Prime p ∧ p ≥ n
+def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, p ≥ n ∧ Nat.Prime p
 
 
 -- [Someone write something for this]
@@ -223,30 +223,23 @@ theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2)
       exact Nat.eq_add_of_sub_eq this h
   done
 
-theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : p = 4*k+1 ∧ exists_infinitely_many_P := by
-  have hp_odd : Odd p := by
-    {
-      apply prime_gt_two_is_odd
-      exact hp
-      exact hp2
-    }
+theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ exists_infinitely_many_P := by
   have h_cong_1 : p % 4 = 1 := by
+    {
     rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
     assumption
     assumption
     assumption
-  have h_ex_k : (∃ (k : ℕ), p = 4*k + 1) := by
-  {
-    rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
-    assumption
-    assumption
-  }
+    }
+  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
   apply And.intro
   case left =>
-    sorry
+    apply h_cong_1
   case right =>
-    sorry
-      -- apply Nat.exists_infinite_primes
+    unfold exists_infinitely_many_P
+    simp only [ge_iff_le]
+    exact fun n => exists_infinite_primes n
+  exact hp
   done
 
 end TPwLDirichlet
