@@ -6,6 +6,7 @@ namespace TPwLDirichlet
 
 open ZMod
 open Polynomial
+open Nat
 
 ---------------------------------------------------------------------------------------------------
 -- Introduction:  The following namespace aims to prove some special cases of dirilichts theorem.
@@ -30,16 +31,14 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
 ---------------------------------------------------------------------------------------------------
 
 open scoped Polynomial in
-lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
-  sorry
+lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply?
   done
 
 ---------------------------------------------------------------------------------------------------
 -- Section 2: The following section contains some prelimnary theorems and lemmas which will be used
 -- throughout the rest of the proofs.
 ---------------------------------------------------------------------------------------------------
-
-open Nat
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
