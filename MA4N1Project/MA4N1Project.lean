@@ -1,11 +1,18 @@
 import Mathlib.Tactic
 import Mathlib.Data.Polynomial.Eval
+import Mathlib.Data.Polynomial.Degree.Lemmas
 
 namespace TPwLDirichlet
 
 open ZMod
 open Polynomial
 open Nat
+
+---------------------------------------------------------------------------------------------------
+-- Introduction:  The following namespace aims to prove some special cases of dirilichts theorem.
+-- These cases are: There exists infinitely many primes p of the form p = 4k + 1, p = 6k + 1 and
+-- p = 8k + 1.
+---------------------------------------------------------------------------------------------------
 
 -- Creating a definition for infinitely many in lean
 -- There are various ways to repsent this, therefore additional versions of this will be defined
@@ -17,10 +24,21 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
   sorry
   done
 
+
+---------------------------------------------------------------------------------------------------
+-- Section 1:  The lemma proved below is our fundamental lemma. This lemma is used in all three of
+-- the cases which are proved in this namespace: 4k + 1, 6k + 1 and 8k + 1
+---------------------------------------------------------------------------------------------------
+
 open scoped Polynomial in
 lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
   apply?
   done
+
+---------------------------------------------------------------------------------------------------
+-- Section 2: The following section contains some prelimnary theorems and lemmas which will be used
+-- throughout the rest of the proofs.
+---------------------------------------------------------------------------------------------------
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
@@ -28,7 +46,6 @@ theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p :
   norm_num
   exact Nat.ne_of_gt hp2
   done
-
 
 -- Proving equivalence of different odd definitions
 lemma n_odd_if_Odd {n : ℕ} (h : Odd n) : n % 2 = 1 := by
@@ -45,6 +62,12 @@ theorem p_odd_then_one_or_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) �
   apply n_odd_if_Odd
   exact hp
   done
+
+
+---------------------------------------------------------------------------------------------------
+-- Section 3: The following three theorems prove some equivalences between vaiour congruences which
+-- are used to throughout later theorems
+---------------------------------------------------------------------------------------------------
 
 -- Proving that if p is odd and is not congruent to 3 mod 4, then it is congruent to 1 mod 4
 theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ} (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
@@ -121,49 +144,7 @@ theorem square_eq_neg_one_mod_p_iff_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
     done
   done
 
-
-
--- Have a theorem which allows you to split the fraction and
--- allow you to evaluate 1/2 to 0 with the integer division
-theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := by
-  refine Nat.add_div_of_dvd_right ?hca
-  exact Nat.dvd_mul_right 2 k
-  done
-
-
--- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`.
--- Proving that for odd or Prime (>2) p, p / 2 = (p - 1) / 2 for integer division
-theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
-  rcases hp with ⟨k, hk⟩
-  rw [hk, Nat.add_sub_cancel]
-  rw [mul_comm, Nat.mul_div_cancel k]
-  rw [mul_comm, split_fraction]
-  rw [mul_comm, Nat.mul_div_cancel k]
-  exact rfl
-  · norm_num
-  · norm_num
-  done
-
--- Proving an alternate version of Eulers Criterion, to make it applicable to our application
-theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
-  rw[←odd_int_div]
-  rw[legendreSym.eq_pow]
-  apply prime_gt_two_is_odd
-  apply hp
-  apply hp2
-  done
-
-lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
-  intro h2
-  have h3 : 4*((p-1) / 4) + 1 = p := by
-  {
-    rw [← hp]
-    rw [← div_eq_sub_mod_div, add_comm]
-    apply mod_add_div p 4
-  }
-  rw [← h3, ← h2]
-  done
-
+-- Establishes the equivalence between p % 4 = 1 and the existence of a natural number k such that p = 4*k + 1 for a prime number p
 theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
   apply Iff.intro
   case mpr =>
@@ -196,6 +177,7 @@ theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1
       exact Nat.eq_add_of_sub_eq this h
   done
 
+-- Shows that for a prime number p, p % (n+2) = 1 is equivalent to the existence of a natural number k such that p = (n+2)*k + 1
 theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2) = 1) ↔ (∃ (k : ℕ), p = (n+2)*k + 1) := by
   apply Iff.intro
   case mpr =>
@@ -228,6 +210,11 @@ theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2)
       exact Nat.eq_add_of_sub_eq this h
   done
 
+
+---------------------------------------------------------------------------------------------------
+-- Section 4: The following theorem proves our first special case. That there exist infinitely many
+-- primes p of the form 4k + 1.
+---------------------------------------------------------------------------------------------------
 theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ exists_infinitely_many_P := by
   have h_cong_1 : p % 4 = 1 := by
     {
@@ -248,6 +235,63 @@ theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod
 
 variable (q : ℕ) [Fact q.Prime]
 
+
+---------------------------------------------------------------------------------------------------
+-- Section 5: The theorems split_fration and odd_int_div allow us to adapt eulers criterion to be
+-- applicable to our case. Most notably, odd_int_div states that for an odd number p, when divided
+-- by 2 using integer division, p / 2 = (p - 1) / 2.
+---------------------------------------------------------------------------------------------------
+
+
+-- Have a theorem which allows you to split the fraction and
+-- allow you to evaluate 1/2 to 0 with the integer division
+theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := by
+  refine Nat.add_div_of_dvd_right ?hca
+  exact Nat.dvd_mul_right 2 k
+  done
+
+
+-- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`.
+-- Proving that for odd or Prime (>2) p, p / 2 = (p - 1) / 2 for integer division
+theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
+  rcases hp with ⟨k, hk⟩
+  rw [hk, Nat.add_sub_cancel]
+  rw [mul_comm, Nat.mul_div_cancel k]
+  rw [mul_comm, split_fraction]
+  rw [mul_comm, Nat.mul_div_cancel k]
+  exact rfl
+  · norm_num
+  · norm_num
+  done
+
+-- Proving an alternate version of Eulers Criterion, to make it applicable to our application
+theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendreSym p a : ZMod p) = (a : ZMod p) ^ ((p-1) / 2) := by
+  rw[←odd_int_div]
+  rw[legendreSym.eq_pow]
+  apply prime_gt_two_is_odd
+  apply hp
+  apply hp2
+  done
+
+-- If a prime number p satisfies p % 4 = 1 then p = 4 * k + 1
+lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
+  intro h2
+  have h3 : 4*((p-1) / 4) + 1 = p := by
+  {
+    rw [← hp]
+    rw [← div_eq_sub_mod_div, add_comm]
+    apply mod_add_div p 4
+  }
+  rw [← h3, ← h2]
+  done
+
+---------------------------------------------------------------------------------------------------
+-- Section 6: The following theorems establish the equality between various legendre symbols. These
+-- are typically used in in the proof of the special case of 6k + 1, and allows us to use the throrems
+-- in a form which applies correctly for our forms.
+---------------------------------------------------------------------------------------------------
+
+-- Establishes the equality of the Legendre symbols (legendreSym p (-q) : ZMod p) and legendreSym q p under certain conditions. These conditions are that q % 4 = 3, p > 2, and p % 4 = 3
 theorem legendre_neg_q_p_eq_legendre_p_q_three_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
   rw[<-neg_one_mul]
   rw[legendreSym.mul]
@@ -266,6 +310,7 @@ theorem legendre_neg_q_p_eq_legendre_p_q_three_mod_four (hp : q % 4 = 3) (hp2 : 
   case hq => exact hp3
   done
 
+--
 theorem legendre_neg_q_p_eq_legendre_p_q_one_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 1) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
   rw[<-neg_one_mul]
   rw[legendreSym.mul]
