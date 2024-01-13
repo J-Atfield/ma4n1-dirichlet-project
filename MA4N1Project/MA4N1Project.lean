@@ -1,9 +1,9 @@
 import Mathlib.Tactic
+import Mathlib.Data.Polynomial.Eval
 
 namespace TPwLDirichlet
 
 open ZMod
-open Nat
 open Polynomial
 
 -- Creating a definition for infinitely many in lean
@@ -16,9 +16,12 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
   sorry
   done
 
-lemma two.one {f : ℕ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, Nat.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+open scoped Polynomial in
+lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
   sorry
   done
+
+open Nat
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
