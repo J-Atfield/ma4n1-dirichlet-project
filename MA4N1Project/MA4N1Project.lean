@@ -8,7 +8,7 @@ open Polynomial
 
 -- Creating a definition for infinitely many in lean
 -- There are various ways to repsent this, therefore additional versions of this will be defined
-def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, Nat.Prime p ∧ p > n
+def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, p ≥ n ∧ Nat.Prime p
 
 
 -- [Someone write something for this]
@@ -16,6 +16,9 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
   sorry
   done
 
+lemma two.one {f : ℕ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, Nat.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  sorry
+  done
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
@@ -148,7 +151,98 @@ theorem eulers_criterion' (a : ℤ) (hp : Nat.Prime p) (hp2 : p > 2) : (legendre
   apply hp2
   done
 
+lemma rearrange {p k : ℕ} (h : Nat.Prime p) (hp : p % 4 = 1) : (p - 1) / 4 = k → p = 4*k + 1 := by
+  intro h2
+  have h3 : 4*((p-1) / 4) + 1 = p := by
+  {
+    rw [← hp]
+    rw [← div_eq_sub_mod_div, add_comm]
+    apply mod_add_div p 4
+  }
+  rw [← h3, ← h2]
+  done
 
+theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
+  apply Iff.intro
+  case mpr =>
+    simp only [forall_exists_index]
+    intro k h_4k_1
+    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    exact rfl
+  case mp =>
+    intro hp_mod_4
+    have h_mod_equiv : 1 ≡ p [MOD 4] := by
+      rw [← hp_mod_4]
+      exact mod_modEq p 4
+    have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
+    have h_exists_k_p1_eq_k4 : ∃ (k : ℕ), p-1=k*4 := by
+      apply exists_eq_mul_left_of_dvd
+      exact h_four_div_p_minus_one
+    cases h_exists_k_p1_eq_k4 with
+    | intro k h =>
+      use k
+      rw [mul_comm]
+      have : 1 ≤ p := by
+      {
+        rw [@one_le_iff_ne_zero]
+        exact Nat.Prime.ne_zero hp
+      }
+      exact Nat.eq_add_of_sub_eq this h
+  done
+
+theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2) = 1) ↔ (∃ (k : ℕ), p = (n+2)*k + 1) := by
+  apply Iff.intro
+  case mpr =>
+    simp only [forall_exists_index]
+    intro k h_nk_1
+    rw [h_nk_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    apply one_mod
+  case mp =>
+    intro hp_mod_n_plus_2
+    have h_mod_equiv : 1 ≡ p [MOD (n+2)] := by
+      rw [← hp_mod_n_plus_2]
+      exact mod_modEq p (n+2)
+    have h_n_plus_2_div_p_minus_one : (n + 2) ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
+    have h_exists_k_p1_eq_kn : ∃ (k : ℕ), p-1=k*(n+2) := by
+      apply exists_eq_mul_left_of_dvd
+      exact h_n_plus_2_div_p_minus_one
+    cases h_exists_k_p1_eq_kn with
+    | intro k h =>
+      use k
+      rw [mul_comm]
+      have : 1 ≤ p := by
+      {
+        rw [@one_le_iff_ne_zero]
+        exact Nat.Prime.ne_zero hp
+      }
+      exact Nat.eq_add_of_sub_eq this h
+  done
+
+theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ exists_infinitely_many_P := by
+  have h_cong_1 : p % 4 = 1 := by
+    {
+    rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    assumption
+    assumption
+    assumption
+    }
+  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
+  apply And.intro
+  case left =>
+    apply h_cong_1
+  case right =>
+    unfold exists_infinitely_many_P
+    simp only [ge_iff_le]
+    exact fun n => exists_infinite_primes n
+  exact hp
 
 variable (q : ℕ) [Fact q.Prime]
 
