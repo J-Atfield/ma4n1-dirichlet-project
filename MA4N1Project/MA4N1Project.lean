@@ -243,6 +243,80 @@ theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod
     simp only [ge_iff_le]
     exact fun n => exists_infinite_primes n
   exact hp
+
+variable (q : ℕ) [Fact q.Prime]
+
+theorem legendre_neg_q_p_eq_legendre_p_q_three_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  rw[legendreSym.quadratic_reciprocity_three_mod_four]
+  simp only [Int.cast_neg, mul_neg]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_three_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp3
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => exact hp
+  case hq => exact hp3
+  done
+
+theorem legendre_neg_q_p_eq_legendre_p_q_one_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 1) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  rw[<-neg_one_mul]
+  rw[legendreSym.mul]
+  simp only [Int.cast_mul]
+  rw[<-legendreSym.quadratic_reciprocity_one_mod_four]
+  rw[legendreSym.at_neg_one]
+  simp only [Int.cast_one]
+  rw [χ₄_nat_one_mod_four]
+  simp only [Int.cast_neg, Int.cast_one, neg_mul, one_mul, neg_neg]
+  apply hp3
+  simp only [ne_eq]
+  apply Nat.ne_of_gt
+  apply hp2
+  case hp => exact hp3
+  case hq => rename_i inst inst_1
+             simp_all only [gt_iff_lt, ne_eq]
+             apply Aesop.BuiltinRules.not_intro
+             intro a
+             aesop_subst a
+             simp_all only
+  done
+
+theorem legendre_neg_q_p_eq_legendre_p_q (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  have hp4 : (p % 4 = 1) ∨ (p % 4 = 3) := by
+  {
+    apply p_odd_then_one_or_three_mod_four
+    apply prime_gt_two_is_odd
+    case hp.hp => exact hp3
+    case hp.hp2 => exact hp2
+    done
+  }
+  cases hp4 with
+  | inl hp4 =>
+    rw[legendre_neg_q_p_eq_legendre_p_q_one_mod_four]
+    case inl.hp => exact hp
+    case inl.hp2 => exact hp2
+    case inl.hp3 => exact hp4
+    done
+  | inr hp4 =>
+    rw[legendre_neg_q_p_eq_legendre_p_q_three_mod_four]
+    case inr.hp => exact hp
+    case inr.hp2 => exact hp2
+    case inr.hp3 => exact hp4
+    done
+  done
+
+theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
+  apply legendre_neg_q_p_eq_legendre_p_q
+  case hp => rename_i inst inst_1
+             aesop_subst hp
+             simp_all only [gt_iff_lt]
+  case hp2 => exact hp2
+  case hp3 => exact hp3
   done
 
 end TPwLDirichlet
