@@ -5,6 +5,7 @@ namespace TPwLDirichlet
 
 open ZMod
 open Polynomial
+open Nat
 
 -- Creating a definition for infinitely many in lean
 -- There are various ways to repsent this, therefore additional versions of this will be defined
@@ -17,11 +18,9 @@ lemma fundamental_lemma {f: Polynomial ℤ} (h : degree f > 0) : exists_infinite
   done
 
 open scoped Polynomial in
-lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
-  sorry
+lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply?
   done
-
-open Nat
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
