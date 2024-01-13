@@ -246,6 +246,41 @@ theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod
     exact fun n => exists_infinite_primes n
   exact hp
 
+theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt] <;>
+  simp
+  done
+
+theorem testing (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_squared_degree_2]
+    simp only
+  done
+
+theorem testing' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]):= by
+  apply testing
+  case hp => simp only
+  done
+
+theorem inf_p_4k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]) := by
+  have h_cong_1 : p % 4 = 1 := by
+    {
+    rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    assumption
+    assumption
+    assumption
+    }
+  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
+  apply And.intro
+  case left =>
+    apply h_cong_1
+  case right =>
+    apply testing'
+  exact hp
+  done
+
 variable (q : ℕ) [Fact q.Prime]
 
 theorem legendre_neg_q_p_eq_legendre_p_q_three_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
