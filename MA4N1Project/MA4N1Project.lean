@@ -464,7 +464,7 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod
     sorry
   done
 
-theorem x_squared_degree_2' : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
+theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
   rw [natDegree_add_eq_left_of_natDegree_lt]
   · exact natDegree_X_pow 2
   have h : natDegree (3 : ℤ[X]) = 0 := by
@@ -474,16 +474,16 @@ theorem x_squared_degree_2' : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
     simp_all only [natDegree_pow, natDegree_X, mul_one, zero_lt_two]
   done
 
-theorem testing'' (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
   apply two.one
   case hf =>
     rw [hp]
-    rw [x_squared_degree_2']
+    rw [x_squared_plus_three_degree_2]
     simp only
   done
 
-theorem testing''' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]):= by
-  apply testing''
+theorem exists_prime_divisor_for_quad_plus_three_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]):= by
+  apply exists_prime_div_of_poly_eval
   rfl
   done
 
@@ -510,25 +510,23 @@ theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMo
     exact hp2
     exact hp
   have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
-    intro legendre_h
-    exact h_cong_1_mod_3 p hp hp2 h_leg_sym_1_rhs
+    intro _
+    exact h_cong_1_mod_3 p h_leg_sym_1_rhs
   have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
-    rename_i inst inst_1
+    rename_i inst _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
     apply And.intro
     · exact hp_cong_1_mod_2
     · exact h_cong_1_mod_3
   have h_coprime_2_3 : Nat.Coprime 2 3 := by
-    rename_i inst inst_1
+    rename_i _ _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
   have h_cong_1_2_mul_3 : p ≡ 1 [MOD 2 * 3] := by
     rw [← Nat.modEq_and_modEq_iff_modEq_mul]
     apply h_cong_1_mod_2_and_3
     exact h_coprime_2_3
-  have h_p_cong_mod_6 : p ≡ 1 [MOD 6] := by
-    exact h_cong_1_2_mul_3
   have h_p_cong_mod_6 : p % 6 = 1 := by
-    rename_i inst inst_1
+    rename_i _ _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
     unhygienic with_reducible aesop_destruct_products
     exact h_cong_1_2_mul_3
@@ -539,7 +537,7 @@ theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMo
     exact h_p_cong_mod_6
     exact hp
   case right =>
-
+    exact exists_prime_divisor_for_quad_plus_three_poly_eval
   done
 
 
