@@ -459,6 +459,11 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod
     sorry
   done
 
+
+lemma h_cong_1_mod_3  (hp : p.Prime) (hp2 : p > 2) : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  sorry
+  done
+
 theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
   have hp_odd : Odd p := by
     exact prime_gt_two_is_odd hp hp2
@@ -475,7 +480,8 @@ theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMo
     exact hp2
     exact hp
   have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
-    sorry
+    intro legendre_h
+    exact h_cong_1_mod_3 p hp hp2 h_leg_sym_1_rhs
   have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
     rename_i inst inst_1
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
