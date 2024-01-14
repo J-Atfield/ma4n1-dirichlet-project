@@ -22,6 +22,24 @@ lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.
   apply?
   done
 
+theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt] <;>
+  simp
+
+theorem testing (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_squared_degree_2]
+    simp only
+  done
+
+theorem testing' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]):= by
+  apply testing
+  case hp => simp only
+  done
+
+
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
   refine Prime.odd_of_ne_two hp ?h_two
@@ -246,6 +264,10 @@ theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod
     exact fun n => exists_infinite_primes n
   exact hp
 
+theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1 {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
+  exact p_mod_n_eq_one_iff_p_eq_nk_plus_1' hp
+  done
+
 variable (q : ℕ) [Fact q.Prime]
 
 theorem legendre_neg_q_p_eq_legendre_p_q_three_mod_four (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : p % 4 = 3) : (legendreSym p (-q) : ZMod p) = legendreSym q p := by
@@ -320,5 +342,71 @@ theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.P
   case hp2 => exact hp2
   case hp3 => exact hp3
   done
+
+  theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = legendreSym 3 p := by
+  apply legendre_neg_q_p_eq_legendre_p_q
+  case hp => simp only
+  case hp2 => exact hp2
+  case hp3 => exact hp3
+  done
+
+lemma legendre_3_p_eq_one_imp_p_mod_3_eq_one : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  rw[legendreSym.eq_pow]
+  rw[odd_int_div]
+  simp only [Int.cast_ofNat, ge_iff_le, succ_sub_succ_eq_sub, tsub_zero, zero_lt_two, Nat.div_self,
+    pow_one]
+  rw[<-ZMod.val_nat_cast]
+  rename_i _ _
+  intro a
+  simp_all only [gt_iff_lt]
+  simp only
+  done
+
+
+lemma neg_3_neq_0 : -3 ≠ 0 := by
+  rw [@ne_iff_lt_or_gt]
+  refine Or.inl ?h
+  norm_num
+  done
+
+
+lemma testing123 (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
+  rw[ZMod.euler_criterion]
+  case ha =>
+    rw [@ne_eq]
+    rw [@neg_eq_zero]
+    refine Prime.ne_zero ?hp
+    aesop?
+    rw [@neg_eq_zero]
+    rw [← @ofAdd_eq_one]
+    apply?
+
+
+    rw [@ne_eq]
+    rw [@neg_eq_zero]
+    rw [← @val_eq_zero]
+
+
+
+
+  -- rw[eulers_criterion']
+
+  -- rw[odd_int_div]
+
+  -- simp only [ge_iff_le, Int.cast_neg, Int.int_cast_ofNat, imp_self]
+
+  -- apply prime_gt_two_is_odd
+
+  -- assumption
+  -- assumption
+  -- assumption
+  -- assumption
+
+
+
+
+  done
+
+
 
 end TPwLDirichlet
