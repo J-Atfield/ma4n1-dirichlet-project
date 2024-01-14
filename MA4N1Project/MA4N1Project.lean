@@ -404,7 +404,8 @@ theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (l
   done
 
 theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
-  rw[legendre_neg_3_p_eq_legendre_p_3']
+  -- rw[legendre_neg_3_p_eq_legendre_p_3']
+  sorry
   done
 
 theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
@@ -481,6 +482,13 @@ theorem testing''' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 +
   apply testing''
   rfl
   done
+
+lemma h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  rw [legendreSym.eq_pow, odd_int_div]
+  norm_num
+  · intro h
+    exact Fin.mk_eq_mk.mp h
+  · exact odd_iff.mpr rfl
 
 theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
   have hp_odd : Odd p := by
