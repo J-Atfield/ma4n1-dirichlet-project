@@ -476,17 +476,12 @@ theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMo
     exact hp
   have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
     sorry
-  have h_cong_1_mod_3' : p ≡ 1 [MOD 3] := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-    exact h_cong_1_mod_3
-  have h_cong_1_mod_2' : p ≡ 1 [MOD 2] := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-    exact hp_cong_1_mod_2
   have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
     rename_i inst inst_1
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
+    apply And.intro
+    · exact hp_cong_1_mod_2
+    · exact h_cong_1_mod_3
   have h_coprime_2_3 : Nat.Coprime 2 3 := by
     rename_i inst inst_1
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
