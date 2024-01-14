@@ -459,9 +459,27 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod
     sorry
   done
 
+theorem x_squared_degree_2' : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt]
+  · exact natDegree_X_pow 2
+  have h : natDegree (3 : ℤ[X]) = 0 := by
+    exact natDegree_C 3
+  · rw [h]
+    rename_i _ _
+    simp_all only [natDegree_pow, natDegree_X, mul_one, zero_lt_two]
+  done
 
-lemma h_cong_1_mod_3  (hp : p.Prime) (hp2 : p > 2) : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
-  sorry
+theorem testing'' (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_squared_degree_2']
+    simp only
+  done
+
+theorem testing''' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]):= by
+  apply testing''
+  rfl
   done
 
 theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
@@ -509,7 +527,7 @@ theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMo
     exact h_p_cong_mod_6
     exact hp
   case right =>
-    sorry
+
   done
 
 
