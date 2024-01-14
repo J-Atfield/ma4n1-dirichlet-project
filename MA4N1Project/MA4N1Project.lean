@@ -401,12 +401,64 @@ theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.P
   case hp3 => exact hp3
   done
 
-theorem legendre_neg_3_p_eq_legendre_p_3' (hp : p > 2) (hp2 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = legendreSym 3 p := by
-  apply legendre_neg_q_p_eq_legendre_p_q
-  case hp => simp only
-  case hp2 => exact hp
-  case hp3 => exact hp2
+theorem legendre_neg_3_p_eq_legendre_p_3' (hp : p > 2) (hp2 : Nat.Prime p) :  (legendreSym p (-3) : ZMod p) = (legendreSym 3 p : ZMod 3):= by
+  sorry
+  -- apply legendre_neg_q_p_eq_legendre_p_q
+  -- case hp => simp only
+  -- case hp2 => exact hp
+  -- case hp3 => exact hp2
   done
+
+theorem update_to_legednre (hp : p >= 3): (legendreSym 3 p : ZMod 3) = ((legendreSym 3 p : ZMod 3) : ZMod p) := by
+  rw [legendreSym.eq_pow]
+  rw[odd_int_div]
+  simp only [Int.cast_ofNat, ge_iff_le, succ_sub_succ_eq_sub, tsub_zero, zero_lt_two, Nat.div_self,
+    pow_one]
+  rw [@cast_eq_val]
+  rw[ZMod.val_cast_eq_val_of_lt]
+  rw [@nat_cast_zmod_val]
+  rw [@val_nat_cast]
+  apply?
+  done
+
+lemma legendre_3_p_eq_one_imp_p_mod_3_eq_one : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  rw[legendreSym.eq_pow]
+  rw[odd_int_div]
+  simp only [Int.cast_ofNat, ge_iff_le, succ_sub_succ_eq_sub, tsub_zero, zero_lt_two, Nat.div_self,
+    pow_one]
+  rw[<-ZMod.val_nat_cast]
+  rename_i _ _
+  intro a
+  simp_all only [gt_iff_lt]
+  simp only
+  done
+
+
+lemma square_neg_3_mod_p_then_legendre_is_1 (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
+  sorry
+  done
+
+lemma intermediate_step (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legendreSym 3 p : ZMod 3) = 1 := by
+  rw[legendre_neg_3_p_eq_legendre_p_3']
+  -- rw [←legendre_neg_3_p_eq_legendre_p_3 p 3 rfl hp2 hp]
+  rw?
+  case hp => exact hp
+  case hp2 => exact hp2
+  done
+
+
+lemma square_neg_3_mod_p_then_p_mod_3_is_1 : IsSquare (-3 : ZMod p) -> p % 3 = 1 := by
+  apply?
+
+  sorry
+  done
+
+
+
+
+
+
+
 
 
 
@@ -418,7 +470,6 @@ theorem legendre_neg_3_p_eq_legendre_p_3' (hp : p > 2) (hp2 : Nat.Prime p) : (le
 theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]) := by
   sorry
   done
-
 
 
 
