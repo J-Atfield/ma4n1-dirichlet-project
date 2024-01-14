@@ -412,58 +412,6 @@ theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZM
   -- sorry
   done
 
-theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
-  have hp_odd : Odd p := by
-    exact prime_gt_two_is_odd hp hp2
-  have hp_cong_1_mod_2 : p % 2 = 1 := by
-    exact n_odd_if_Odd hp_odd
-  have h_leg_sym_1_lhs : (legendreSym p (-3) : ZMod p) = 1 := by
-    apply testing123
-    exact hp
-    exact hp2
-    exact hs
-  have h_leg_sym_1_rhs : (legendreSym 3 p : ZMod 3) = 1 := by
-    rw [← lhs_iff_rhs]
-    apply h_leg_sym_1_lhs
-    exact hp2
-    exact hp
-  have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
-    sorry
-  have h_cong_1_mod_3' : p ≡ 1 [MOD 3] := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-    exact h_cong_1_mod_3
-  have h_cong_1_mod_2' : p ≡ 1 [MOD 2] := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-    exact hp_cong_1_mod_2
-  have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
-  have h_coprime_2_3 : Nat.Coprime 2 3 := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-  have h_cong_1_2_mul_3 : p ≡ 1 [MOD 2 * 3] := by
-    rw [← Nat.modEq_and_modEq_iff_modEq_mul]
-    apply h_cong_1_mod_2_and_3
-    exact h_coprime_2_3
-  have h_p_cong_mod_6 : p ≡ 1 [MOD 6] := by
-    exact h_cong_1_2_mul_3
-  have h_p_cong_mod_6 : p % 6 = 1 := by
-    rename_i inst inst_1
-    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-    unhygienic with_reducible aesop_destruct_products
-    exact h_cong_1_2_mul_3
-  apply And.intro
-  case left =>
-    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_1']
-    norm_num
-    exact h_p_cong_mod_6
-    exact hp
-  case right =>
-    sorry
-  done
-
 theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
   rw [natDegree_add_eq_left_of_natDegree_lt]
   · exact natDegree_X_pow 2
@@ -494,7 +442,7 @@ lemma h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
     exact Fin.mk_eq_mk.mp h
   · exact odd_iff.mpr rfl
 
-theorem inf_p_6k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
+theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
   have hp_odd : Odd p := by
     exact prime_gt_two_is_odd hp hp2
   have hp_cong_1_mod_2 : p % 2 = 1 := by
