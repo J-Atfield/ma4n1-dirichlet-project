@@ -396,16 +396,20 @@ lemma testing123 (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legen
   sorry
   done
 
-theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = (legendreSym 3 p : ZMod p) := by
-  apply legendre_neg_q_p_eq_legendre_p_q
-  case hp => simp only
-  case hp2 => exact hp2
-  case hp3 => exact hp3
+theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = (legendreSym 3 p : ZMod 3) := by
+  -- apply legendre_neg_q_p_eq_legendre_p_q
+  -- case hp => simp only
+  -- case hp2 => exact hp2
+  -- case hp3 => exact hp3
+  sorry
   done
 
 theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
-  -- rw[legendre_neg_3_p_eq_legendre_p_3']
-  sorry
+  rw[legendre_neg_3_p_eq_legendre_p_3']
+
+  exact hp2
+  exact hp3
+  -- sorry
   done
 
 theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
