@@ -215,24 +215,6 @@ theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2)
 -- Section 4: The following theorem proves our first special case. That there exist infinitely many
 -- primes p of the form 4k + 1.
 ---------------------------------------------------------------------------------------------------
-theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ exists_infinitely_many_P := by
-  have h_cong_1 : p % 4 = 1 := by
-    {
-    rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
-    assumption
-    assumption
-    assumption
-    }
-  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
-  apply And.intro
-  case left =>
-    apply h_cong_1
-  case right =>
-    unfold exists_infinitely_many_P
-    simp only [ge_iff_le]
-    exact fun n => exists_infinite_primes n
-  exact hp
-
 theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
   rw [natDegree_add_eq_left_of_natDegree_lt] <;>
   simp
@@ -251,7 +233,7 @@ theorem testing' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1
   case hp => simp only
   done
 
-theorem inf_p_4k_plus_one' (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]) := by
+theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]) := by
   have h_cong_1 : p % 4 = 1 := by
     {
     rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
@@ -400,5 +382,112 @@ theorem legendre_neg_3_p_eq_legendre_p_3 (hp : q = 3) (hp2 : p > 2) (hp3 : Nat.P
   case hp2 => exact hp2
   case hp3 => exact hp3
   done
+
+lemma testing123 (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
+  rw[ZMod.euler_criterion]
+  rw[eulers_criterion']
+  rw[odd_int_div]
+  simp only [ge_iff_le, Int.cast_neg, Int.int_cast_ofNat, imp_self]
+  apply prime_gt_two_is_odd
+  assumption
+  assumption
+  assumption
+  assumption
+  sorry
+  done
+
+theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = (legendreSym 3 p : ZMod 3) := by
+  -- apply legendre_neg_q_p_eq_legendre_p_q
+  -- case hp => simp only
+  -- case hp2 => exact hp2
+  -- case hp3 => exact hp3
+  sorry
+  done
+
+theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
+  sorry
+  done
+
+theorem lhs_imp_by_rhs (hp2 : p > 3) (hp3 : Nat.Prime p) : (legendreSym 3 p : ZMod 3) = 1 →  (legendreSym p (-3) : ZMod p) = 1 := by
+  rw [legendreSym.eq_pow, legendreSym.eq_pow]
+
+  done
+
+theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt]
+  · exact natDegree_X_pow 2
+  have h : natDegree (3 : ℤ[X]) = 0 := by
+    exact natDegree_C 3
+  · rw [h]
+    rename_i _ _
+    simp_all only [natDegree_pow, natDegree_X, mul_one, zero_lt_two]
+  done
+
+theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_squared_plus_three_degree_2]
+    simp only
+  done
+
+theorem exists_prime_divisor_for_quad_plus_three_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]):= by
+  apply exists_prime_div_of_poly_eval
+  rfl
+  done
+
+lemma h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  rw [legendreSym.eq_pow, odd_int_div]
+  norm_num
+  · intro h
+    exact Fin.mk_eq_mk.mp h
+  · exact odd_iff.mpr rfl
+
+theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
+  have hp_odd : Odd p := by
+    exact prime_gt_two_is_odd hp hp2
+  have hp_cong_1_mod_2 : p % 2 = 1 := by
+    exact n_odd_if_Odd hp_odd
+  have h_leg_sym_1_lhs : (legendreSym p (-3) : ZMod p) = 1 := by
+    apply testing123
+    exact hp
+    exact hp2
+    exact hs
+  have h_leg_sym_1_rhs : (legendreSym 3 p : ZMod 3) = 1 := by
+    rw [← lhs_iff_rhs]
+    apply h_leg_sym_1_lhs
+    exact hp2
+    exact hp
+  have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+    intro _
+    exact h_cong_1_mod_3 p h_leg_sym_1_rhs
+  have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
+    rename_i inst _
+    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
+    apply And.intro
+    · exact hp_cong_1_mod_2
+    · exact h_cong_1_mod_3
+  have h_coprime_2_3 : Nat.Coprime 2 3 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
+  have h_cong_1_2_mul_3 : p ≡ 1 [MOD 2 * 3] := by
+    rw [← Nat.modEq_and_modEq_iff_modEq_mul]
+    apply h_cong_1_mod_2_and_3
+    exact h_coprime_2_3
+  have h_p_cong_mod_6 : p % 6 = 1 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
+    unhygienic with_reducible aesop_destruct_products
+    exact h_cong_1_2_mul_3
+  apply And.intro
+  case left =>
+    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_1']
+    norm_num
+    exact h_p_cong_mod_6
+    exact hp
+  case right =>
+    exact exists_prime_divisor_for_quad_plus_three_poly_eval
+  done
+
 
 end TPwLDirichlet
