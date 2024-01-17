@@ -405,11 +405,12 @@ theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (l
   done
 
 theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
-  rw[legendre_neg_3_p_eq_legendre_p_3']
+  sorry
+  done
 
-  exact hp2
-  exact hp3
-  -- sorry
+theorem lhs_imp_by_rhs (hp2 : p > 3) (hp3 : Nat.Prime p) : (legendreSym 3 p : ZMod 3) = 1 →  (legendreSym p (-3) : ZMod p) = 1 := by
+  rw [legendreSym.eq_pow, legendreSym.eq_pow]
+
   done
 
 theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
