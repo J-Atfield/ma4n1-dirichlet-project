@@ -381,22 +381,17 @@ theorem ne_eq_zero_iff_gcd_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
   exact Iff.symm eq_zero_iff_gcd_ne_one
   done
 
-theorem james (a : ℤ) (hp : a = 3) (hp2 : p.Prime) (hp3 : p > 3) : (a : ZMod p) ≠ 0 := by
-  rw[ne_eq_zero_iff_gcd_one]
-  sorry
-  done
-
 theorem james2 : ((3 : ℤ) : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
   rw[ne_eq_zero_iff_gcd_one]
   done
 
 theorem james3 : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
-  sorry
-  -- rw[ne_eq_zero_iff_gcd_one]
+  rw [← james2]
+  simp only [ne_eq, Int.int_cast_ofNat]
   done
 
 theorem for_jack (hp : p.Prime) (hp2 : p > 3) : Int.gcd 3 p = 1 := by
-  sorry
+  apply?
   done
 
 /-- If an integer `a` and a prime `p` satisfy `gcd a p = 1`, then `a : ZMod p` is nonzero. -/
