@@ -369,42 +369,67 @@ lemma neg_3_neq_0 : -3 ≠ 0 := by
   norm_num
   done
 
+theorem eq_zero_iff_gcd_ne_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
+    (a : ZMod p) = 0 ↔ a.gcd p ≠ 1 := by
+  rw [Ne, Int.gcd_comm, Int.gcd_eq_one_iff_coprime,
+    (Nat.prime_iff_prime_int.1 pp.1).coprime_iff_not_dvd, Classical.not_not,
+    int_cast_zmod_eq_zero_iff_dvd]
 
-lemma testing123 (hp : p.Prime) (hp2 : p > 2) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
+theorem ne_eq_zero_iff_gcd_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
+    (a : ZMod p) ≠ 0 ↔ a.gcd p = 1 := by
+  refine not_iff_comm.mpr ?_
+  exact Iff.symm eq_zero_iff_gcd_ne_one
+  done
+
+theorem james (a : ℤ) (hp : a = 3) (hp2 : p.Prime) (hp3 : p > 3) : (a : ZMod p) ≠ 0 := by
+  rw[ne_eq_zero_iff_gcd_one]
+  sorry
+  done
+
+theorem james2 : ((3 : ℤ) : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
+  rw[ne_eq_zero_iff_gcd_one]
+  done
+
+theorem james3 : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
+  sorry
+  -- rw[ne_eq_zero_iff_gcd_one]
+  done
+
+
+/-- If an integer `a` and a prime `p` satisfy `gcd a p = 1`, then `a : ZMod p` is nonzero. -/
+theorem ne_zero_of_gcd_eq_one {a : ℤ} {p : ℕ} (pp : p.Prime) (h : a.gcd p = 1) : (a : ZMod p) ≠ 0 := by
+  sorry
+  -- mt (@eq_zero_iff_gcd_ne_one a p ⟨pp⟩).mp (Classical.not_not.mpr h)
+  done
+
+lemma impossibleLemma (a : ℤ) (hp : p.Prime) (hp2 : p > 3) (h : a.gcd p = 1) : (a : ZMod p) ≠ 0 := by
+  apply ne_zero_of_gcd_eq_one
+  case pp => exact hp
+  case h => exact h
+  done
+
+lemma impossibleLemma2 (a : ℤ) (hp : p.Prime) (hp2 : p > 3) (h : Nat.gcd 3 p = 1) : (a : ZMod p) ≠ 0 := by
+  apply ne_zero_of_gcd_eq_one
+  case pp => exact hp
+  case h =>
+  done
+
+lemma testing123 (hp : p.Prime) (hp2 : p > 3) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
   rw[ZMod.euler_criterion]
   case ha =>
-    rw [@ne_eq]
-    rw [@neg_eq_zero]
-    refine Prime.ne_zero ?hp
-    aesop?
-    rw [@neg_eq_zero]
-    rw [← @ofAdd_eq_one]
-    apply?
+    rw [@neg_ne_zero]
+    rw[james3]
 
 
-    rw [@ne_eq]
-    rw [@neg_eq_zero]
-    rw [← @val_eq_zero]
-
-
-
-
-  -- rw[eulers_criterion']
-
-  -- rw[odd_int_div]
-
-  -- simp only [ge_iff_le, Int.cast_neg, Int.int_cast_ofNat, imp_self]
-
-  -- apply prime_gt_two_is_odd
-
-  -- assumption
-  -- assumption
-  -- assumption
-  -- assumption
-
-
-
-
+    done
+  rw[eulers_criterion']
+  rw[odd_int_div]
+  simp only [ge_iff_le, Int.cast_neg, Int.int_cast_ofNat, imp_self]
+  apply prime_gt_two_is_odd
+  assumption
+  assumption
+  assumption
+  assumption
   done
 
 
