@@ -395,6 +395,9 @@ theorem james3 : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
   -- rw[ne_eq_zero_iff_gcd_one]
   done
 
+theorem for_jack (hp : p.Prime) (hp2 : p > 3) : Int.gcd 3 p = 1 := by
+  sorry
+  done
 
 /-- If an integer `a` and a prime `p` satisfy `gcd a p = 1`, then `a : ZMod p` is nonzero. -/
 theorem ne_zero_of_gcd_eq_one {a : ℤ} {p : ℕ} (pp : p.Prime) (h : a.gcd p = 1) : (a : ZMod p) ≠ 0 := by
