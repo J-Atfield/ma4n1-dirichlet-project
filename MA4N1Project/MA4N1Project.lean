@@ -363,12 +363,6 @@ lemma legendre_3_p_eq_one_imp_p_mod_3_eq_one : (legendreSym 3 p : ZMod 3) = 1 �
   done
 
 
-lemma neg_3_neq_0 : -3 ≠ 0 := by
-  rw [@ne_iff_lt_or_gt]
-  refine Or.inl ?h
-  norm_num
-  done
-
 theorem eq_zero_iff_gcd_ne_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
     (a : ZMod p) = 0 ↔ a.gcd p ≠ 1 := by
   rw [Ne, Int.gcd_comm, Int.gcd_eq_one_iff_coprime,
@@ -390,44 +384,40 @@ theorem james3 : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
   simp only [ne_eq, Int.int_cast_ofNat]
   done
 
-theorem for_jack (hp : p.Prime) (hp2 : p > 3) : Int.gcd 3 p = 1 := by
-  apply?
+lemma primes_coprime {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) : Coprime p q := by
+  exact (coprime_primes hp hq).mpr hpq
   done
 
-/-- If an integer `a` and a prime `p` satisfy `gcd a p = 1`, then `a : ZMod p` is nonzero. -/
-theorem ne_zero_of_gcd_eq_one {a : ℤ} {p : ℕ} (pp : p.Prime) (h : a.gcd p = 1) : (a : ZMod p) ≠ 0 := by
-  sorry
-  -- mt (@eq_zero_iff_gcd_ne_one a p ⟨pp⟩).mp (Classical.not_not.mpr h)
+theorem for_jack (hp : p.Prime) (hp2 : p ≠ 3) : Int.gcd 3 p = 1 := by
+  have h_3_prime : Nat.Prime 3 := by
+    exact prime_three
+  have hp2' : 3 ≠ p := by
+    exact fun a => hp2 (Eq.symm a)
+  have h_3_p_coprime : Coprime 3 p := by
+    exact primes_coprime h_3_prime hp hp2'
+  rename_i _ _
+  simp_all only [ne_eq]
+  exact h_3_p_coprime
   done
 
-lemma impossibleLemma (a : ℤ) (hp : p.Prime) (hp2 : p > 3) (h : a.gcd p = 1) : (a : ZMod p) ≠ 0 := by
-  apply ne_zero_of_gcd_eq_one
-  case pp => exact hp
-  case h => exact h
-  done
-
-lemma impossibleLemma2 (a : ℤ) (hp : p.Prime) (hp2 : p > 3) (h : Nat.gcd 3 p = 1) : (a : ZMod p) ≠ 0 := by
-  apply ne_zero_of_gcd_eq_one
-  case pp => exact hp
-  case h =>
-  done
 
 lemma testing123 (hp : p.Prime) (hp2 : p > 3) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
   rw[ZMod.euler_criterion]
   case ha =>
     rw [@neg_ne_zero]
     rw[james3]
-
-
+    apply for_jack
+    exact hp
+    exact Nat.ne_of_gt hp2
     done
   rw[eulers_criterion']
   rw[odd_int_div]
   simp only [ge_iff_le, Int.cast_neg, Int.int_cast_ofNat, imp_self]
   apply prime_gt_two_is_odd
-  assumption
-  assumption
-  assumption
-  assumption
+  exact hp
+  exact lt_of_succ_lt hp2
+  exact hp
+  exact lt_of_succ_lt hp2
   done
 
 
