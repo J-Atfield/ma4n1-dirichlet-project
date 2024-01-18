@@ -448,13 +448,17 @@ theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (l
   sorry
   done
 
--- theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
---   sorry
---   done
+axiom leg_imp : (legendreSym p (-3) : ZMod p) = 1 → (legendreSym 3 p : ZMod 3) = 1
 
-theorem lhs_imp_by_rhs (hp2 : p > 3) (hp3 : Nat.Prime p) : (legendreSym 3 p : ZMod 3) = 1 →  (legendreSym p (-3) : ZMod p) = 1 := by
-  sorry
-
+theorem lhs_iff_rhs (hp2 : p > 3) (hp3 : Nat.Prime p) (hs : IsSquare (-3 : ZMod p)): (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
+  apply Iff.intro
+  case mp =>
+    intro h_leg_p_minus_3_eq_one
+    exact leg_imp p h_leg_p_minus_3_eq_one
+  case mpr =>
+    intro _
+    refine IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one p hp3 hp2 ?_
+    exact hs
   done
 
 theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
@@ -501,9 +505,10 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
     exact hs
   have h_leg_sym_1_rhs : (legendreSym 3 p : ZMod 3) = 1 := by
     rw [← lhs_iff_rhs]
-    apply h_leg_sym_1_lhs
-    exact hp3
+    exact h_leg_sym_1_lhs
+    exact hp2
     exact hp
+    exact hs
   have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
     intro _
     exact h_cong_1_mod_3 p h_leg_sym_1_rhs
@@ -535,5 +540,18 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
     exact exists_prime_divisor_for_quad_plus_three_poly_eval
   done
 
+lemma IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one' (hp : p.Prime) (hp2 : p > 3) : IsSquare (-3 : ZMod p) -> legendreSym p (-3) = 1 := by
+  intro hs
+  rw [legendreSym.eq_one_iff]
+  simp only [Int.cast_neg, Int.int_cast_ofNat]
+  exact hs
+  case ha0 =>
+    simp only [Int.cast_neg, Int.int_cast_ofNat, ne_eq, neg_eq_zero]
+    rw [← @ne_eq]
+    rw[three_mod_p_ne_eq_zero_iff_gcd_one_without_cast]
+    apply for_jack
+    exact hp
+    exact Nat.ne_of_gt hp2
+  done
 
 end TPwLDirichlet
