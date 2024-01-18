@@ -503,4 +503,17 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
     exact exists_prime_divisor_for_quad_plus_three_poly_eval
   done
 
+lemma pow_2_2 {n : ℤ } : (n ^ 2) ^ 2 = n^4 := by
+  have h : ( n ^ 2) ^ 2 = n ^ (2 * 2) := by
+    rw [mul_comm]
+    rw [pow_mul]
+    done
+  exact h
+  done
+
+
+theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : ℤ) : a ^ (p - 1) = (a ^ 4) ^ ((p - 1) / 4) := by
+  rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
+  done
+
 end TPwLDirichlet
