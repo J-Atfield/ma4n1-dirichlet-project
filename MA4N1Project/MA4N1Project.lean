@@ -503,4 +503,23 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
     exact exists_prime_divisor_for_quad_plus_three_poly_eval
   done
 
+---------------------------------------------------------------------------------------------------
+-- Section 7:
+---------------------------------------------------------------------------------------------------
+
+
+
+theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : ℤ) : a ^ (p - 1) = (a ^ 4) ^ ((p - 1) / 4) := by
+  rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
+  done
+
+theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+  rw [← a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4]
+
+  done
+
+theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
+  sorry
+  done
+
 end TPwLDirichlet
