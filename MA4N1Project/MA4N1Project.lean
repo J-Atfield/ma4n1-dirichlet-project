@@ -475,7 +475,6 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
   have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
     intro legendreHp
     exact h_cong_1_mod_3 p legendreHp
-    -- exact h_cong_1_mod_3 p h_leg_sym_1_rhs
   have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
     rename_i inst _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
