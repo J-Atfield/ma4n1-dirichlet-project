@@ -395,12 +395,12 @@ theorem ne_eq_zero_iff_gcd_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] :
   exact Iff.symm eq_zero_iff_gcd_ne_one
   done
 
-theorem james2 : ((3 : ℤ) : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
+theorem three_mod_p_ne_eq_zero_iff_gcd_one : ((3 : ℤ) : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
   rw[ne_eq_zero_iff_gcd_one]
   done
 
-theorem james3 : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
-  rw [← james2]
+theorem three_mod_p_ne_eq_zero_iff_gcd_one_without_cast : (3 : ZMod p) ≠ 0 ↔ Int.gcd 3 p = 1 := by
+  rw [← three_mod_p_ne_eq_zero_iff_gcd_one]
   simp only [ne_eq, Int.int_cast_ofNat]
   done
 
@@ -421,11 +421,11 @@ theorem for_jack (hp : p.Prime) (hp2 : p ≠ 3) : Int.gcd 3 p = 1 := by
   done
 
 
-lemma testing123 (hp : p.Prime) (hp2 : p > 3) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
+lemma IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one (hp : p.Prime) (hp2 : p > 3) : IsSquare (-3 : ZMod p) -> (legendreSym p (-3) : ZMod p) = 1 := by
   rw[ZMod.euler_criterion]
   case ha =>
     rw [@neg_ne_zero]
-    rw[james3]
+    rw[three_mod_p_ne_eq_zero_iff_gcd_one_without_cast]
     apply for_jack
     exact hp
     exact Nat.ne_of_gt hp2
@@ -448,12 +448,12 @@ theorem legendre_neg_3_p_eq_legendre_p_3' (hp2 : p > 2) (hp3 : Nat.Prime p) : (l
   sorry
   done
 
-theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
-  sorry
-  done
+-- theorem lhs_iff_rhs (hp2 : p > 2) (hp3 : Nat.Prime p) : (legendreSym p (-3) : ZMod p) = 1 ↔ (legendreSym 3 p : ZMod 3) = 1 := by
+--   sorry
+--   done
 
 theorem lhs_imp_by_rhs (hp2 : p > 3) (hp3 : Nat.Prime p) : (legendreSym 3 p : ZMod 3) = 1 →  (legendreSym p (-3) : ZMod p) = 1 := by
-  rw [legendreSym.eq_pow, legendreSym.eq_pow]
+  sorry
 
   done
 
@@ -495,7 +495,7 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
   have hp_cong_1_mod_2 : p % 2 = 1 := by
     exact n_odd_if_Odd hp_odd
   have h_leg_sym_1_lhs : (legendreSym p (-3) : ZMod p) = 1 := by
-    apply testing123
+    apply IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one
     exact hp
     exact hp2
     exact hs
