@@ -515,11 +515,42 @@ theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : 
 
 theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
   rw [← a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4]
+  sorry
+  done
 
+theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt] <;>
+  simp
+  done
+
+theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_fouth_plus_one_degree_4]
+    simp only
+  done
+
+theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]):= by
+  apply exists_prime_div_of_x_fouth_poly_eval
+  rfl
   done
 
 theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
-  sorry
+  have h_cong_1 : p % 4 = 1 := by
+    rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    exact hs
+    exact lt_of_succ_lt hp2
+    exact hp
+  have h_p_4k_plus_1 : ∃ (k : ℕ), p = 4*k+1 := by
+    rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
+    exact h_cong_1
+    exact hp
+  apply And.intro
+  case left =>
+    sorry
+  case right =>
+    exact exists_prime_divisor_for_quart_plus_one_poly_eval
   done
 
 end TPwLDirichlet
