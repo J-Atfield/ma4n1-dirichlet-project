@@ -632,4 +632,9 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod
     exact exists_prime_divisor_for_quart_plus_one_poly_eval
   done
 
+  theorem relation_pt_2 {a : ℤ} (hp : p.Prime) (hp : 4 ∣ p - 1) (ha1 : a ≠ 0) (ha2 : a^4 ≡ -1 [ZMOD p]) (hpa : IsCoprime a p) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+    rw[a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4 p ?hp a]
+    exact hp
+    done
+
 end TPwLDirichlet
