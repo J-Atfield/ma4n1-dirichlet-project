@@ -506,6 +506,8 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
 -- Section 7:
 ---------------------------------------------------------------------------------------------------
 
+
+
 lemma square_of_square_is_quartic {n : ℤ} : (n^2)^2 = n^4 := by
   have h : (n^2)^2 = n^(2*2) := by
     rw [mul_comm]
@@ -514,6 +516,7 @@ lemma square_of_square_is_quartic {n : ℤ} : (n^2)^2 = n^4 := by
   exact h
   done
 
+
 theorem quartic_cong_imp_square_square_cong (hs : IsSquare (-1)) : x^4 ≡ 1 [ZMOD p] ↔ (x^2)^2 ≡ 1 [ZMOD p] := by
   have h2 : (x^2)^2 = x^4 := by
     exact square_of_square_is_quartic
@@ -521,13 +524,40 @@ theorem quartic_cong_imp_square_square_cong (hs : IsSquare (-1)) : x^4 ≡ 1 [ZM
   simp_all only
   done
 
+theorem x_pow_4_plus_1_imp_p_eq_4k_plus_1 (hp: p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : x^4 ≡ 1 [ZMOD p] → ∃ (k : ℕ), p = 4*k+1 := by
+  intro h
+  have h2 : (x^2)^2 ≡ 1 [ZMOD p] := by
+    have hq : (x^2)^2 = x^4 := by
+      exact square_of_square_is_quartic
+    rw [hq]
+    exact h
+  have h3 : (x^2)^2 ≡ 1 [ZMOD p] → p % 4 = 1 := by
+    intro _
+    rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    exact hs
+    exact lt_of_succ_lt hp2
+    exact hp
+  have h4 : p % 4 = 1 := by
+    exact h3 h2
+  have h5 : (p % 8) % 4 = 1 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, forall_true_left, mod_mod_of_dvd]
+  have h6 : (p % 8) % 4 = p % 4 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, forall_true_left, mod_mod_of_dvd]
+  rw [h6] at h5
+  rw [rearrange h4]
+  use (p - 1) / 4
+  rfl
+  done
+
 theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : ℤ) : a ^ (p - 1) = (a ^ 4) ^ ((p - 1) / 4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
   done
 
-theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (hp : 4 ∣ p - 1) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
   rw [← a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4]
-  sorry
+  exact hp
   done
 
 theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
