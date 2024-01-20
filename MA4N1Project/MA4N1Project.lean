@@ -555,7 +555,7 @@ theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : 
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
   done
 
-theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (hp : 4 ∣ p - 1) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+theorem test2 {a : ℤ} (hp : 4 ∣ p - 1) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
   rw [← a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4]
   exact hp
   done
@@ -578,12 +578,17 @@ theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prim
   rfl
   done
 
+
+theorem is_square_mius_1_mod_p_imp_x_square_cong_minus_one_mod_p (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : IsSquare (-1 : ZMod p) → x^2 ≡ -1 [ZMOD p] := by
+  sorry
+  done
+
 theorem copilot_jhee (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : x^4 ≡ -1 [ZMOD p] → p % 8 = 1 := by
   intro h
   have test : x^2 ≡ -1 [ZMOD p] := by
-    sorry
+    exact is_square_mius_1_mod_p_imp_x_square_cong_minus_one_mod_p p hp hp2 hs hs
   have h2 : (x^2)^2 ≡ -1 [ZMOD p] := by
-    sorry
+    exact pow_mul x 2 2 ▸ h
   have h3 : (x^2)^2 ≡ -1 [ZMOD p] → p % 4 = 1 := by
     intro h3
     rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
