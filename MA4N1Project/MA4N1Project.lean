@@ -595,22 +595,37 @@ theorem relation_pt_2 {a : ℤ} (hp : p.Prime) (hp : 4 ∣ p - 1) (ha1 : a ≠ 0
   done
 
 theorem relation_pt_3 {a : ℤ} (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 ≡ -1 [ZMOD p]) (hpa : IsCoprime a p) : (a^4)^((p-1)/4) ≡ (-1)^((p-1)/4) [ZMOD p] := by
-  have h_a_pow_4_eq_one : a^4 = 1 := by
-    apply?
+
   done
 
-theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
+theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (hp2 : p > 2) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = ((-1 : ℤ))^((p-1)/4) := by
   have one_eq_pow_a : 1 = a^(p-1) := by
     exact (relation p hp ha1).symm
+  have hp_mod_4 : p % 4 = 1 := by
+    rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    exact hs
+    exact hp2
+    exact hp
+  have h_mod_equiv : 1 ≡ p [MOD 4] := by
+      rw [← hp_mod_4]
+      exact mod_modEq p 4
+  have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
+      rw [← modEq_iff_dvd']
+      apply h_mod_equiv
+      refine one_le_iff_ne_zero.mpr ?_
+      exact Nat.Prime.ne_zero hp
   have test : (a^4)^((p-1)/4) = a^(4 * ((p-1)/4)) := by
     exact (pow_mul a 4 ((p - 1) / 4)).symm
   have test2 : 4 * ((p-1)/4) = (p-1) := by
     rw [@mul_div_eq_iff_dvd]
-    sorry
+    exact h_four_div_p_minus_one
   have a_pow_eq_a_quart_pow : a^(p-1) = (a^4)^((p-1)/4) := by
-    sorry
+    exact
+      Mathlib.Tactic.Ring.pow_nat (id test2.symm) ha2
+        (congrFun (congrArg HPow.hPow (id ha2.symm)) ((p - 1) / 4))
   have a_quart_pow_eq_neg_1_pow : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
     rw [ha2]
+  rw [one_eq_pow_a, a_pow_eq_a_quart_pow, a_quart_pow_eq_neg_1_pow]
   sorry
   done
 
