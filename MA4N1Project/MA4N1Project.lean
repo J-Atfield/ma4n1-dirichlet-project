@@ -267,7 +267,6 @@ theorem split_fraction {k : ℕ} : (2 * k + 1) / 2 = ((2 * k) / 2) + (1 / 2) := 
   exact Nat.dvd_mul_right 2 k
   done
 
-
 -- We have the congruence `legendreSym p a ≡ a ^ (p / 2) mod p`.
 -- Proving that for odd or Prime (>2) p, p / 2 = (p - 1) / 2 for integer division
 theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
@@ -504,29 +503,120 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
   done
 
 ---------------------------------------------------------------------------------------------------
-lemma pow_2_2 {n : ℤ } : (n ^ 2) ^ 2 = n^4 := by
-  have h : (n ^ 2) ^ 2 = n ^ (2 * 2) := by
+-- Section 7:
+---------------------------------------------------------------------------------------------------
+
+lemma square_of_square_is_quartic {n : ℤ} : (n^2)^2 = n^4 := by
+  have h : (n^2)^2 = n^(2*2) := by
     rw [mul_comm]
     rw [pow_mul]
     done
   exact h
   done
 
+theorem quartic_cong_imp_square_square_cong (hs : IsSquare (-1)) : x^4 ≡ 1 [ZMOD p] ↔ (x^2)^2 ≡ 1 [ZMOD p] := by
+  have h2 : (x^2)^2 = x^4 := by
+    exact square_of_square_is_quartic
+  rename_i _ _
+  simp_all only
+  done
+
 theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : ℤ) : a ^ (p - 1) = (a ^ 4) ^ ((p - 1) / 4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
   done
 
-theorem one_eq_a_pow_p_sub_one_mod_p (a : ℕ) (hp: 4 ∣ p - 1): 1 ≡ a^(p-1) [MOD p] := by
+theorem test2 {a : ℤ} (hs : IsSquare (-1 : ZMod p)) (ha : a^4 ≡ 1 [ZMOD p]) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+  rw [← a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4]
   sorry
   done
 
-theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4' (hp : 4 ∣ p - 1) (a : ℤ) : (a ^ 4) ^ ((p - 1) / 4) = (-1) ^ ((p - 1) / 4) := by
+theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
+  rw [natDegree_add_eq_left_of_natDegree_lt] <;>
+  simp
+  done
+
+theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+  apply two.one
+  case hf =>
+    rw [hp]
+    rw [x_fouth_plus_one_degree_4]
+    simp only
+  done
+
+theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]):= by
+  apply exists_prime_div_of_x_fouth_poly_eval
+  rfl
+  done
+
+theorem copilot_jhee (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : x^4 ≡ -1 [ZMOD p] → p % 8 = 1 := by
+  intro h
+  have test : x^2 ≡ -1 [ZMOD p] := by
+    sorry
+  have h2 : (x^2)^2 ≡ -1 [ZMOD p] := by
+    sorry
+  have h3 : (x^2)^2 ≡ -1 [ZMOD p] → p % 4 = 1 := by
+    intro h3
+    rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    exact hs
+    exact lt_of_succ_lt hp2
+    exact hp
+  have h4 : p % 4 = 1 := by
+    exact h3 h2
+  have h5 : (p % 8) % 4 = 1 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, forall_true_left, mod_mod_of_dvd]
+  have h6 : (p % 8) % 4 = p % 4 := by
+    rename_i _ _
+    simp_all only [gt_iff_lt, forall_true_left, mod_mod_of_dvd]
+  rw [h6] at h5
   sorry
   done
 
-theorem final (hp : 4 ∣ p - 1) (a: ℤ) : 1 ≡ (-1) ^ ((p - 1) / 4) [MOD p] := by
-
+theorem cong_rel_imp_8k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] → ∃ (k : ℕ), p = 8*k+1 := by
+  intro h
+  sorry
   done
 
+theorem p_8k_plus_one_imp_cong_rel (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : ∃ (k : ℕ), p = 8*k+1 → 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
+  sorry
+  done
+
+theorem relation {a : ZMod p} (hp : p.Prime) (ha1 : a ≠ 0) : a^(p-1) = 1 := by
+  exact pow_card_sub_one_eq_one ha1
+  done
+
+theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
+  have one_eq_pow_a : 1 = a^(p-1) := by
+    exact (relation p hp ha1).symm
+  have test : (a^4)^((p-1)/4) = a^(4 * ((p-1)/4)) := by
+    exact (pow_mul a 4 ((p - 1) / 4)).symm
+  have test2 : 4 * ((p-1)/4) = (p-1) := by
+    rw [@mul_div_eq_iff_dvd]
+    sorry
+  have a_pow_eq_a_quart_pow : a^(p-1) = (a^4)^((p-1)/4) := by
+    sorry
+  have a_quart_pow_eq_neg_1_pow : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
+    rw [ha2]
+  sorry
+  done
+
+theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
+  have h_cong_1 : p % 4 = 1 := by
+    rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
+    exact hs
+    exact lt_of_succ_lt hp2
+    exact hp
+  have h_p_4k_plus_1 : ∃ (k : ℕ), p = 4*k+1 := by
+    rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
+    exact h_cong_1
+    exact hp
+  have h_1_cong_pow_minus_one_div_four : 1 ≡ (-1) ^ ((p - 1) / 4) [ZMOD p] := by
+    sorry
+  apply And.intro
+  case left =>
+    sorry
+  case right =>
+    exact exists_prime_divisor_for_quart_plus_one_poly_eval
+  done
 
 end TPwLDirichlet
