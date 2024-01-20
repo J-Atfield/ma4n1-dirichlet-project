@@ -595,11 +595,16 @@ theorem relation_pt_2 {a : ℤ} (hp : p.Prime) (hp : 4 ∣ p - 1) (ha1 : a ≠ 0
   done
 
 theorem relation_pt_3 {a : ℤ} (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 ≡ -1 [ZMOD p]) (hpa : IsCoprime a p) : (a^4)^((p-1)/4) ≡ (-1)^((p-1)/4) [ZMOD p] := by
-  have h_a_pow_4_eq_one : a^4 = 1 := by
+  have h_a_pow_4_eq_one : a^4 = -1 := by
     apply?
   done
 
-theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
+theorem relation' {a : ℤ} (hpa : IsCoprime a p) (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
+  have hp123 : 1 ≡ a^(p-1) [ZMOD p] := by
+    exact relation_pt_1 p hp hpa
+  rw?
+
+
   have one_eq_pow_a : 1 = a^(p-1) := by
     exact (relation p hp ha1).symm
   have test : (a^4)^((p-1)/4) = a^(4 * ((p-1)/4)) := by
@@ -631,6 +636,36 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod
     sorry
   case right =>
     exact exists_prime_divisor_for_quart_plus_one_poly_eval
+  done
+
+
+
+
+
+theorem relation_pt_1' (hp : p.Prime) (hpa : IsCoprime a p) (a : ZMod p) (ha1 : a ≠ 0): 1 = a^(p-1) := by
+  rw[pow_card_sub_one_eq_one]
+  exact ha1
+  done
+
+theorem relation_pt_2' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+  rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
+  done
+
+theorem relation_pt_3' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (ha1 : a ≠ 0) (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
+  rw [ha2]
+  done
+
+theorem combine_relations (hp : p.Prime) (hp2 : p > 3) (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
+  rw[<-relation_pt_3']
+  rw [← relation_pt_2' p hp]
+  rw [relation p hp ha1]
+
+  exact hp3
+  exact p
+  exact hp
+  exact hp3
+  exact Nat.Prime.ne_zero hp
+  exact ha2
   done
 
 end TPwLDirichlet
