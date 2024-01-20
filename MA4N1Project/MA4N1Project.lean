@@ -585,6 +585,19 @@ theorem relation {a : ZMod p} (hp : p.Prime) (ha1 : a ≠ 0) : a^(p-1) = 1 := by
   exact pow_card_sub_one_eq_one ha1
   done
 
+theorem relation_pt_1 {a : ℤ} (hp : p.Prime) (hpa : IsCoprime a p) : 1 ≡ a^(p-1) [ZMOD p] := by
+  exact Int.ModEq.symm (Int.ModEq.pow_card_sub_one_eq_one hp hpa)
+  done
+
+theorem relation_pt_2 {a : ℤ} (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 ≡ -1 [ZMOD p]) (hpa : IsCoprime a p) : a^(p-1) ≡ (a^4)^((p-1)/4) [ZMOD p] := by
+  sorry
+  done
+
+theorem relation_pt_3 {a : ℤ} (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 ≡ -1 [ZMOD p]) (hpa : IsCoprime a p) : (a^4)^((p-1)/4) ≡ (-1)^((p-1)/4) [ZMOD p] := by
+  have h_a_pow_4_eq_one : a^4 = 1 := by
+    apply?
+  done
+
 theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : 1 ≡ (-1)^((p-1)/4) [ZMOD p] := by
   have one_eq_pow_a : 1 = a^(p-1) := by
     exact (relation p hp ha1).symm
