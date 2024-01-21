@@ -545,28 +545,24 @@ theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prim
 
 
 
-theorem relation_pt_1' (hp : p.Prime) (hpa : IsCoprime a p) (a : ZMod p) (ha1 : a ≠ 0): 1 = a^(p-1) := by
+theorem relation_pt_1' (a : ZMod p) (ha1 : a ≠ 0): 1 = a^(p-1) := by
   rw[pow_card_sub_one_eq_one]
   exact ha1
   done
 
-theorem relation_pt_2' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+theorem relation_pt_2' (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
   done
 
-theorem relation_pt_3' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (ha1 : a ≠ 0) (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
+theorem relation_pt_3' (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
   rw [ha2]
   done
 
-theorem combine_relations (hp : p.Prime) (hp2 : p > 3) (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
+theorem combine_relations (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
   rw[<-relation_pt_3']
-  rw [← relation_pt_2' p hp]
+  rw [← relation_pt_2' p]
   rw [pow_card_sub_one_eq_one ha1]
   exact hp3
-  exact p
-  exact hp
-  exact hp3
-  exact Nat.Prime.ne_zero hp
   exact ha2
   done
 
@@ -584,7 +580,7 @@ theorem one_mod_four_iff {n : ℕ} : n % 4 = 1 ↔ n % 8 = 1 ∨ n % 8 = 5 :=
     help (n % 8) (mod_lt n (by norm_num)) <| (mod_mod_of_dvd n (by decide : 4 ∣ 8)).trans hn,
     fun h => Or.elim h odd_of_mod_eight_eq_one odd_of_mod_eight_eq_five⟩
 
-theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5' {p : ℕ} (hp : p.Prime) (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
+theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5' {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
   apply Iff.intro
   case mpr =>
     simp only [forall_exists_index]
@@ -628,11 +624,10 @@ theorem trivial : (((8 * k) + 4) / 4) = 2 * k + 1:= by
   exact trivial2
   done
 
-theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) (ha2 : p.Prime): Odd ((p - 1) / 4) := by
+theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) : Odd ((p - 1) / 4) := by
   have hp2 : (∃ (k : ℕ), p = 8*k + 5) := by
     rw[<-p_mod_8_eq_one_iff_p_eq_8k_plus_5']
     exact hp
-    exact ha2
     exact ha
     done
   cases hp2 with
@@ -650,9 +645,9 @@ theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) (ha2 : p.Prime): Odd ((p -
       exact hp4
   done
 
-theorem five_mod_eight'' (hp : p % 8 = 5) (ha : p > 5) (ha2 : p.Prime) : ((-1) : ZMod p) ^ ((p - 1) / 4) = -1 := by
+theorem five_mod_eight'' (hp : p % 8 = 5) (ha : p > 5) : ((-1) : ZMod p) ^ ((p - 1) / 4) = -1 := by
   refine Odd.neg_one_pow ?h
-  exact fraction_is_odd p hp ha ha2
+  exact fraction_is_odd p hp ha
   done
 
 theorem ne_neg_self {n : ℕ} (hn : Odd n) {a : ZMod n} (ha : a ≠ 0) : a ≠ -a := by
@@ -665,11 +660,10 @@ theorem neg_one_ne_one (ha : Odd p) : (1 :  ZMod p) ≠ -1 := by
   done
 
 
-theorem five_mod_eight''' (hp : p % 8 = 5) (hp2 : ((-1) : ZMod p) ^ ((p - 1) / 4) = 1) (ha3 : p > 5)  (ha2 : p.Prime) (ha4 : Odd p) : False := by
+theorem five_mod_eight''' (hp : p % 8 = 5) (hp2 : ((-1) : ZMod p) ^ ((p - 1) / 4) = 1) (ha3 : p > 5) (ha4 : Odd p) : False := by
   have hp3 : ((-1) : ZMod p) ^ ((p - 1) / 4) = -1 := by
-    exact five_mod_eight'' p hp ha3 ha2
+    exact five_mod_eight'' p hp ha3
   have hp4 : (-1 : ZMod p) = 1 := by
-    rename_i inst
     simp_all only [ge_iff_le, odd_iff_not_even, gt_iff_lt, one_pow]
     done
   have hp5 : (-1 : ZMod p) ≠ 1 := by
@@ -690,12 +684,11 @@ theorem last_part (hp : p % 4 = 1) (ha2 : p.Prime) (ha3 : p > 5) (ha5 : Odd p) :
 
   have hp3 : ¬(p % 8 = 5) := by
     by_contra hp3
-    exact five_mod_eight''' p hp3 ha4 ha3 ha2 ha5
+    exact five_mod_eight''' p hp3 ha4 ha3 ha5
     done
 
   have hp4 : ¬(p % 8 = 5) -> (p % 8 =1) := by
-    rename_i inst
-    intro a
+    intro _
     simp_all only [ge_iff_le, odd_iff_not_even, or_false, OfNat.one_ne_ofNat, not_false_eq_true]
 
   refine (p_mod_n_eq_one_iff_p_eq_nk_plus_1' ?hp).mp (hp4 hp3)
@@ -709,7 +702,6 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hp3 : 4 ∣ p - 1) (hs :
   have gt_three : p > 3 := by
     apply lt_of_succ_lt
     apply lt_of_succ_lt
-    rename_i inst inst_1
     simp_all only [gt_iff_lt, ge_iff_le, Nat.isUnit_iff, ne_eq]
     done
 
@@ -721,8 +713,6 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hp3 : 4 ∣ p - 1) (hs :
     exact hp
   have h_1_cong_pow_minus_one_div_four : (1 : ZMod p) = (-1) ^ ((p - 1) / 4) := by
     rw[<-combine_relations]
-    exact hp
-    exact gt_three
     exact hp3
     exact a
     exact ha1
