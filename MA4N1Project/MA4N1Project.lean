@@ -14,8 +14,8 @@ open Nat
 -- p = 8k + 1.
 ---------------------------------------------------------------------------------------------------
 
-Creating a definition for infinitely many in lean
-There are various ways to repsent this, therefore additional versions of this will be defined
+-- Creating a definition for infinitely many in lean
+-- There are various ways to repsent this, therefore additional versions of this will be defined
 def exists_infinitely_many_P : Prop := ∀ n : ℕ, ∃ p : ℕ, p ≥ n ∧ Nat.Prime p
 
 
@@ -506,25 +506,6 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
 -- Section 7:
 ---------------------------------------------------------------------------------------------------
 
-lemma square_of_square_is_quartic {n : ℤ} : (n^2)^2 = n^4 := by
-  have h : (n^2)^2 = n^(2*2) := by
-    rw [mul_comm]
-    rw [pow_mul]
-    done
-  exact h
-  done
-
-theorem quartic_cong_imp_square_square_cong (hs : IsSquare (-1)) : x^4 ≡ 1 [ZMOD p] ↔ (x^2)^2 ≡ 1 [ZMOD p] := by
-  have h2 : (x^2)^2 = x^4 := by
-    exact square_of_square_is_quartic
-  rename_i _ _
-  simp_all only
-  done
-
-theorem a_pow_p_minus_1_eq_a_pow_4_pow_p_minus_1_div_4  (hp : 4 ∣ p - 1) (a : ℤ) : a ^ (p - 1) = (a ^ 4) ^ ((p - 1) / 4) := by
-  rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp]
-  done
-
 theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
   rw [natDegree_add_eq_left_of_natDegree_lt] <;>
   simp
@@ -544,23 +525,17 @@ theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prim
   done
 
 
-
-theorem relation_pt_1' (a : ZMod p) (ha1 : a ≠ 0): 1 = a^(p-1) := by
-  rw[pow_card_sub_one_eq_one]
-  exact ha1
-  done
-
-theorem relation_pt_2' (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+theorem relation_pt_2 (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
   done
 
-theorem relation_pt_3' (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
+theorem relation_pt_3 (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
   rw [ha2]
   done
 
 theorem combine_relations (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
-  rw[<-relation_pt_3']
-  rw [← relation_pt_2' p]
+  rw[<-relation_pt_3]
+  rw [← relation_pt_2 p]
   rw [pow_card_sub_one_eq_one ha1]
   exact hp3
   exact ha2
@@ -580,7 +555,7 @@ theorem one_mod_four_iff {n : ℕ} : n % 4 = 1 ↔ n % 8 = 1 ∨ n % 8 = 5 :=
     help (n % 8) (mod_lt n (by norm_num)) <| (mod_mod_of_dvd n (by decide : 4 ∣ 8)).trans hn,
     fun h => Or.elim h odd_of_mod_eight_eq_one odd_of_mod_eight_eq_five⟩
 
-theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5' {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
+theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5 {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
   apply Iff.intro
   case mpr =>
     simp only [forall_exists_index]
@@ -626,7 +601,7 @@ theorem trivial : (((8 * k) + 4) / 4) = 2 * k + 1:= by
 
 theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) : Odd ((p - 1) / 4) := by
   have hp2 : (∃ (k : ℕ), p = 8*k + 5) := by
-    rw[<-p_mod_8_eq_one_iff_p_eq_8k_plus_5']
+    rw[<-p_mod_8_eq_one_iff_p_eq_8k_plus_5]
     exact hp
     exact ha
     done
