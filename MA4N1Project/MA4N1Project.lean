@@ -629,6 +629,47 @@ theorem relation' {a : ZMod p} (hs : IsSquare (-1 : ZMod p)) (hp : p.Prime) (hp2
   sorry
   done
 
+theorem relation_pt_1' (hp : p.Prime) (hpa : IsCoprime a p) (a : ZMod p) (ha1 : a ≠ 0): 1 = a^(p-1) := by
+  rw[pow_card_sub_one_eq_one]
+  exact ha1
+  done
+
+theorem relation_pt_2' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+  rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
+  done
+
+theorem relation_pt_3' (hp : p.Prime) (hp2 : 4 ∣ p - 1) (ha1 : a ≠ 0) (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)/4) = (-1)^((p-1)/4) := by
+  rw [ha2]
+  done
+
+theorem combine_relations (hp : p.Prime) (hp2 : p > 3) (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
+  rw[<-relation_pt_3']
+  rw [← relation_pt_2' p hp]
+  rw [relation p hp ha1]
+  exact hp3
+  exact p
+  exact hp
+  exact hp3
+  exact Nat.Prime.ne_zero hp
+  exact ha2
+  done
+
+lemma even_pow_of_neg_pos {a : ℤ} (ha : a > 0) : (-a)^n = a^n → Even n := by
+  sorry
+  done
+
+lemma one_if_even_pow (hp : p.Prime) (hp2 : p > 2) : (1 : ZMod p) = (-1)^((p-1)/4) → (p-1)/4 = 2*k := by
+  have h_pow_even : Even ((p-1)/4) := by
+    apply even_pow_of_neg_pos
+    sorry
+  intro h
+  apply?
+  done
+
+theorem of_form (hp : p.Prime) (hp2 : p > 2) : (1 : ZMod p) = (-1)^((p-1)/4) → ∃ (k : ℕ), p = 8*k+1 := by
+
+  done
+
 theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
   have h_cong_1 : p % 4 = 1 := by
     rw[← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
