@@ -651,7 +651,7 @@ theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha
 
 -- There are infinite primes of the form 8k + 1
 theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hp3 : 4 ∣ p - 1) (hs : IsSquare (-1 : ZMod p)) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
-  have gt_three : p > 3 := by
+  have h_p_gt_three : p > 3 := by
     apply lt_of_succ_lt
     apply lt_of_succ_lt
     simp_all only [gt_iff_lt, ge_iff_le, Nat.isUnit_iff, ne_eq]
@@ -659,7 +659,7 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hp3 : 4 ∣ p - 1) (hs :
   have h_cong_1 : p % 4 = 1 := by
     rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
     exact hs
-    exact lt_of_succ_lt gt_three
+    exact lt_of_succ_lt h_p_gt_three
     exact hp
   have h_1_cong_pow_minus_one_div_four : (1 : ZMod p) = (-1) ^ ((p - 1) / 4) := by
     rw [← one_equiv_pow_of_neg_one_zmod_p]
@@ -677,7 +677,7 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hp3 : 4 ∣ p - 1) (hs :
     exact hp
     exact hp2
     refine prime_gt_two_is_odd hp ?ha5.hp2
-    exact lt_of_succ_lt gt_three
+    exact lt_of_succ_lt h_p_gt_three
     exact id h_1_cong_pow_minus_one_div_four.symm
     exact hp
     done
