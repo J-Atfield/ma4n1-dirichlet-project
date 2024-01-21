@@ -637,7 +637,7 @@ theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha
     by_contra hp3
     exact pow_of_neg_one_eq_neg_one_if_p_mod_8_5' p hp3 ha4 ha3 ha5
     done
-  have hp4 : ¬(p % 8 = 5) -> (p % 8 =1) := by
+  have hp4 : ¬(p % 8 = 5) -> (p % 8 = 1) := by
     intro _
     simp_all only [ge_iff_le, odd_iff_not_even, or_false, OfNat.one_ne_ofNat, not_false_eq_true]
   refine (p_mod_n_eq_one_iff_p_eq_nk_plus_1' ?hp).mp (hp4 hp3)
