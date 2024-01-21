@@ -658,8 +658,8 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hs : IsSquare (-1 : ZMod
     exact lt_of_succ_lt h_p_gt_three
     exact hp
   have h_mod_equiv : 1 ≡ p [MOD 4] := by
-      rw [← h_cong_1]
-      exact mod_modEq p 4
+    rw [← h_cong_1]
+    exact mod_modEq p 4
   have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
     rw [← modEq_iff_dvd']
     apply h_mod_equiv
