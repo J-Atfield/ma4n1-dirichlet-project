@@ -496,7 +496,7 @@ theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prim
   done
 
 -- (a^(p-1)) ≡ (a^4)^((p-1)/4) [ZMOD p], first in chain of congruences
-theorem pow_equiv_to_pow_mul_div_4 (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+theorem pow_equiv_to_pow_mul_4_div_4 (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
   done
 
@@ -508,29 +508,29 @@ theorem pow_of_a_equiv_pow_of_neg_1 (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)
 -- 1 ≡ (a^4)^((p-1)/4) [ZMOD p], last part of chain of congruences
 theorem one_equiv_pow_of_neg_one_zmod_p (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
   rw [← pow_of_a_equiv_pow_of_neg_1]
-  rw [← pow_equiv_to_pow_mul_div_4 p]
+  rw [← pow_equiv_to_pow_mul_4_div_4 p]
   rw [pow_card_sub_one_eq_one ha1]
   exact hp3
   exact ha2
   done
 
 -- n % 4 = 1 if n % 8 = 1
-theorem odd_of_mod_eight_eq_one {n : ℕ} : n % 8 = 1 → n % 4 = 1 := by
+theorem one_mod_eight_then_one_mod_four {n : ℕ} : n % 8 = 1 → n % 4 = 1 := by
   simpa [ModEq, show 2 * 4 = 8 by norm_num] using @ModEq.of_mul_left 4 n 1 2
   done
 
 -- n % 4 = 1 if n % 8 = 5
-theorem odd_of_mod_eight_eq_five {n : ℕ} : n % 8 = 5 → n % 4 = 1 := by
+theorem five_mod_eight_then_one_mod_four {n : ℕ} : n % 8 = 5 → n % 4 = 1 := by
   simpa [ModEq, show 2 * 4 = 8 by norm_num, show 5 % 8 = 5 by norm_num] using
     @ModEq.of_mul_left 4 n 5 2
   done
 
 -- n % 4 = 1 iff either n % 8 = 1 or n % 8 = 5
-theorem one_mod_four_iff {n : ℕ} : n % 4 = 1 ↔ n % 8 = 1 ∨ n % 8 = 5 :=
+theorem one_mod_four_iff_one_or_five_mod_eight {n : ℕ} : n % 4 = 1 ↔ n % 8 = 1 ∨ n % 8 = 5 :=
   have help : ∀ m : ℕ, m < 8 → m % 4 = 1 → m = 1 ∨ m = 5 := by decide
   ⟨fun hn =>
     help (n % 8) (mod_lt n (by norm_num)) <| (mod_mod_of_dvd n (by decide : 4 ∣ 8)).trans hn,
-    fun h => Or.elim h odd_of_mod_eight_eq_one odd_of_mod_eight_eq_five⟩
+    fun h => Or.elim h one_mod_eight_then_one_mod_four five_mod_eight_then_one_mod_four⟩
 
 -- p = 8k + 5 iff p % 8 = 5
 theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5 {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
@@ -571,7 +571,7 @@ theorem eight_k_div_4_even : ((8 * k) / 4) = 2 * k := by
   rw [@Mathlib.Tactic.RingNF.mul_assoc_rev]
   done
 
--- 8k + 4 / 4 is odd
+-- (8k + 4) / 4 is odd
 theorem eight_k_plus_4_div_4_odd : (((8 * k) + 4) / 4) = 2 * k + 1:= by
   simp only [zero_lt_four, add_div_right, succ.injEq]
   exact eight_k_div_4_even
@@ -605,10 +605,6 @@ theorem pow_of_neg_one_eq_neg_one_if_p_mod_8_5 (hp : p % 8 = 5) (ha : p > 5) : (
   exact fraction_is_odd p hp ha
   done
 
--- Negative of a number does not equal said number
-theorem ne_neg_self {n : ℕ} (hn : Odd n) {a : ZMod n} (ha : a ≠ 0) : a ≠ -a := by
-  rwa [Ne, eq_neg_iff_add_eq_zero, add_self_eq_zero_iff_eq_zero hn]
-
 -- 1 ≠ -1 in ZMod p if p is odd
 theorem neg_one_ne_one (ha : Odd p) : (1 :  ZMod p) ≠ -1 := by
   apply ne_neg_self
@@ -635,7 +631,7 @@ theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha
   norm_num
   intro ha4
   have hp2 : p % 8 = 1 ∨ p % 8 = 5 := by
-    exact one_mod_four_iff.mp hp
+    exact one_mod_four_iff_one_or_five_mod_eight.mp hp
     done
   have hp3 : ¬(p % 8 = 5) := by
     by_contra hp3
