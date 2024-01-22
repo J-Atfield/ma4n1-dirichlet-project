@@ -577,7 +577,7 @@ theorem eight_k_plus_4_div_4_odd : (((8 * k) + 4) / 4) = 2 * k + 1:= by
   exact eight_k_div_4_even
   done
 
--- The power (p-1)/4 is odd
+-- The power (p-1)/4 is odd if p % 8 = 5
 theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) : Odd ((p - 1) / 4) := by
   have hp2 : (∃ (k : ℕ), p = 8*k + 5) := by
     rw [← p_mod_8_eq_one_iff_p_eq_8k_plus_5]
