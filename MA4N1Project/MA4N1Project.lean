@@ -20,25 +20,31 @@ open Nat
 ---------------------------------------------------------------------------------------------------
 
 -- Define the product function
-def product_of_elements_of_set (S : Finset ℤ) : ℤ := S.prod (λ x ↦ x)
+def product_of_set (S : Finset ℤ) : ℤ := S.prod (λ x ↦ x)
 
--- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | _root_.Prime p ∧ p ∣ f.eval n}
+-- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | root.Prime p ∧ p ∣ f.eval n}
 def prime_divisors (f : ℤ[X]) (n : ℕ) : Finset ℤ := sorry
 
 theorem prime_divisors_divide_f (f : ℤ[X]) (n : ℕ) (p : prime_divisors f n) : p.val ∣ f.eval n := by
   sorry
   done
 
-def my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) : ℤ := (product_of_elements_of_set prime_divisors_f) * (f.eval 0)
-
-theorem p_in_prime_divisors_f_imp_p_divides_my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) (p : prime_divisors f n) : p.val ∣ my_b f prime_divisors_f := by
-  sorry
-  done
+def my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) : ℤ := (product_of_set prime_divisors_f) * (f.eval 0)
 
 def my_g (f : ℤ[X]) (b : ℤ) : ℤ[X] := sorry
 
-theorem my_g_coefficients (f : ℤ[X]) (b : ℤ) (i : ℕ) : (my_g f b).coeff i = f.coeff (i) * b^i / (f.eval 0) := by
-  sorry
+theorem my_g_coefficients (f : ℤ[X])  (i : ℕ) (prime_divisors_f : Finset ℤ): (my_g f (my_b f prime_divisors_f)).coeff i = f.coeff (i) * b^i  / (f.eval 0):= sorry
+
+theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) : (my_g f (my_b f prime_divisors_f)).coeff 0 = 1 :=by
+  rw [my_g_coefficients]
+  rw [← @_root_.pow_succ]
+  rw [Nat.zero_add]
+  rw [@coeff_zero_eq_eval_zero]
+  have h1 : eval 0 f ^ 1 = eval 0 f := by
+    rw [pow_one]
+    done
+  rw [h1]
+  exact Int.ediv_self h
   done
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
