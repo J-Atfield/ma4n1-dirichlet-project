@@ -19,10 +19,35 @@ open Nat
 -- the cases which are proved in this namespace: 4k + 1, 6k + 1 and 8k + 1
 ---------------------------------------------------------------------------------------------------
 
+-- Define the product function
+def product_of_elements_of_set (S : Finset ℤ) : ℤ := S.prod (λ x ↦ x)
+
+-- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | _root_.Prime p ∧ p ∣ f.eval n}
+def prime_divisors (f : ℤ[X]) (n : ℕ) : Finset ℤ := sorry
+
+theorem prime_divisors_divide_f (f : ℤ[X]) (n : ℕ) (p : prime_divisors f n) : p.val ∣ f.eval n := by
+  sorry
+  done
+
+def my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) : ℤ := (product_of_elements_of_set prime_divisors_f) * (f.eval 0)
+
+theorem p_in_prime_divisors_f_imp_p_divides_my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) (p : prime_divisors f n) : p.val ∣ my_b f prime_divisors_f := by
+  sorry
+  done
+
+def my_g (f : ℤ[X]) (b : ℤ) : ℤ[X] := sorry
+
+theorem my_g_coefficients (f : ℤ[X]) (b : ℤ) (i : ℕ) : (my_g f b).coeff i = f.coeff (i) * b^i / (f.eval 0) := by
+  sorry
+  done
+
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
 open scoped Polynomial in
-lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
-  apply?
+lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧  p ∣ f.eval n := by
+  have h_b_eq (b : ℤ) (a : ℤ) : b = a * f.eval 0 := by
+    sorry
+  have a_div_b (a : ℤ) : a ∣ b := by
+    sorry
   done
 
 ---------------------------------------------------------------------------------------------------
