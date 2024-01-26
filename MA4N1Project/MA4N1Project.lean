@@ -155,6 +155,60 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
 
 
 -- theorem trivial_case' (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+  let a := coeff f 0
+  let n := M ! + a ^ 2
+
+  have hp3 : f = X * g + C a := by
+    sorry
+    done
+
+  have simple : eval n X = n := by
+    exact eval_X
+    done
+
+  have hp4 : f.eval n = n * g.eval n + a := by
+    rw[hp3]
+    rw [@eval_add]
+    rw [@eval_C]
+    rw [@eval_mul]
+    rw [eval_X]
+    done
+
+  have hp5 : f.eval (M ! + a ^ 2) = (M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a := by
+    simp only
+    exact hp4
+    done
+
+  have hp6 : ((M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    sorry
+    done
+
+  have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) = a * (M !) * (g.eval (M ! * a ^ 2)) + 1 := by
+    simp only
+    done
+  let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
+  let p := minFac (functionAbsolute)
+  have f1 : functionAbsolute ≠ 1 := sorry
+  have pp : Nat.Prime p := minFac_prime f1
+
+  have np : M ≤ p :=
+    le_of_not_ge fun h =>
+      have h₁ : p ∣ functionAbsolute := minFac_dvd functionAbsolute
+      have h₂ : p ∣ 1 := sorry
+    pp.not_dvd_one h₂
+
+  have ppp : _root_.Prime p := by
+    exact (primeJames p).mpr pp
+  have hp2 : (p:ℤ) ∣ f.eval n := by
+
+    done
+
+
+  ⟨p, n, ppp, np, hp2⟩
+
+
+
 -- theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
 --   let a := coeff f 0
 --   let n := M ! + a ^ 2
@@ -181,76 +235,24 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
 --   have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) = a * (M !) * (g.eval (M ! * a ^ 2)) + 1 := by
 --     simp only
 --     done
+
 --   let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
 --   let p := minFac (functionAbsolute)
 
---   -- have np : M ≤ p :=
---   --   le_of_not_ge fun h =>
---   --     have h₁ : p ∣ functionAbsolute := minFac_dvd functionAbsolute
---   --     have h₂ : p ∣ 1 := by
---   --       sorry
---   --     done
---   --   pp.not_dvd_one h₂
+--   have np : M ≤ p :=
+--     le_of_not_gt fun h =>
+--       have h₁: p ∣ functionAbsolute := minFac_dvd functionAbsolute
+--       have h₂: p ∣ 1 := sorry
 
---   have f1 : functionAbsolute ≠ 1 := Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
---   have pp : Nat.Prime p := minFac_prime f1
---   have ppp : _root_.Prime p := by
---     exact (primeJames p).mpr pp
---   have hp2 : (p:ℤ) ∣ f.eval n := by
+--   -- have f1 : functionAbsolute ≠ 1 := Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+--   -- have pp : Nat.Prime p := minFac_prime f1
 
+--   have ppp : _root_.Prime p := sorry
+--   have hp2 : (p : ℤ) ∣ f.eval n := by
+--     rw [hp5]
+--     sorry
 --     done
-
-
 --   ⟨p, n, ppp, np, hp2⟩
-
-theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n := by
-  sorry
-  done
-
-  -- let a := coeff f 0
-  -- let n := M ! + a ^ 2
-
-  -- have hp3 : f = X * g + C a := by
-  --   sorry
-  --   done
-
-  -- have hp4 : f.eval n = n * g.eval n + a := by
-  --   rw[hp3]
-  --   rw [@eval_add]
-  --   sorry
-  --   done
-
-  -- have hp5 : f.eval (M ! + a ^ 2) = (M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a := by
-  --   simp only
-  --   exact hp4
-  --   done
-
-  -- have hp6 : ((M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
-  --   sorry
-  --   done
-
-  -- have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) = a * (M !) * (g.eval (M ! * a ^ 2)) + 1 := by
-  --   simp only
-  --   done
-
-  -- let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
-  -- let p := minFac (functionAbsolute)
-
-  -- have np : M ≤ p :=
-  --   le_of_not_gt fun h =>
-  --     have h₁: p ∣ functionAbsolute := minFac_dvd functionAbsolute
-  --     have h₂: p ∣ 1 := sorry
-
-  -- have f1 : functionAbsolute ≠ 1 := Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
-  -- have pp : Nat.Prime p := minFac_prime f1
-
-  -- have ppp : _root_.Prime p := by
-  --   exact (primeJames p).mpr pp
-  -- have hp2 : (p : ℤ) ∣ f.eval n := by
-  --   rw [hp5]
-
-  --   done
-  -- ⟨p, n, ppp, np, hp2⟩
 
 
 lemma two.one' {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p:ℤ) ∣ f.eval n := by
@@ -258,7 +260,7 @@ lemma two.one' {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) : ∃ p n, _root_
     exact ne_or_eq (coeff f 0) 0
   cases hp with
   | inl h =>
-    exact non_trivial_case hf h M
+    exact non_trivial_case hf M h
   | inr h =>
     exact trivial_case M h
   done
