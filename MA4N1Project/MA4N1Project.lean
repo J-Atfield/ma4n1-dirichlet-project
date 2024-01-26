@@ -22,10 +22,16 @@ open Nat
 -- Define the product function
 def product_of_set (S : Finset ℤ) : ℤ := S.prod (λ x ↦ x)
 
+theorem element_of_set_divides_product_of_set (S : Finset ℤ) (x : ℤ) (hx : x ∈ S) : x ∣ product_of_set S := by
+  sorry
+  done
+
 -- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | root.Prime p ∧ p ∣ f.eval n}
 def prime_divisors (f : ℤ[X]) (n : ℕ) : Finset ℤ := sorry
 
-theorem prime_divisors_divide_f (f : ℤ[X]) (n : ℕ) (p : prime_divisors f n) : p.val ∣ f.eval n := by
+instance : Membership ℤ (prime_divisors f n) := sorry
+
+theorem prime_divisors_divide_f (f : ℤ[X]) (n : ℕ) (S : prime_divisors f n) (hp : p ∈ S) : p ∣ f.eval n := by
   sorry
   done
 
@@ -33,7 +39,23 @@ def my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) : ℤ := (product_of_set p
 
 def my_g (f : ℤ[X]) (b : ℤ) : ℤ[X] := sorry
 
-theorem my_g_coefficients (f : ℤ[X])  (i : ℕ) (prime_divisors_f : Finset ℤ): (my_g f (my_b f prime_divisors_f)).coeff i = f.coeff (i) * b^i  / (f.eval 0):= sorry
+theorem product_of_prime_divisors_dvd_my_b (f : ℤ[X]) (prime_divisors_f : Finset ℤ) : product_of_set prime_divisors_f ∣ my_b f prime_divisors_f := by
+  rw [my_b]
+  exact Int.dvd_mul_right (product_of_set prime_divisors_f) (eval 0 f)
+  done
+
+theorem a_dvd_b_imp_a_div_pow_neq_zero_b (a : ℤ) (b : ℤ) (i : ℕ) (ha : a ∣ b) (hi : i ≠ 0): a ∣ b^i := by
+  exact dvd_pow ha hi
+  done
+
+theorem product_of_prime_divisors_dvd__pow_my_b (i : ℕ) (hi : i ≠ 0) : product_of_set prime_divisors_f ∣ (my_b f prime_divisors_f)^i := by
+  rw [my_b]
+  apply a_dvd_b_imp_a_div_pow_neq_zero_b
+  exact Int.dvd_mul_right (product_of_set prime_divisors_f) (eval 0 f)
+  exact hi
+  done
+
+theorem my_g_coefficients (f : ℤ[X]) (i : ℕ) (prime_divisors_f : Finset ℤ): (my_g f (my_b f prime_divisors_f)).coeff i = f.coeff (i) * b^i  / (f.eval 0):= sorry
 
 theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) : (my_g f (my_b f prime_divisors_f)).coeff 0 = 1 :=by
   rw [my_g_coefficients]
@@ -45,6 +67,10 @@ theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 �
     done
   rw [h1]
   exact Int.ediv_self h
+  done
+
+theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : prime_divisors f n) (hS1 : S : Finset ℤ) (hS2 : p = product_of_set S) : p ∣ (my_g f (my_b f prime_divisors_f)).coeff i := by
+  sorry
   done
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
