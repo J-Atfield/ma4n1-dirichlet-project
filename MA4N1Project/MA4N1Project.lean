@@ -153,11 +153,14 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
       pp.not_dvd_one h₂
   ⟨p, n, ppp, np, hp2⟩
 
+theorem squares (a : ℤ) : a^2 = a * a := by
+  exact sq a
+  done
 
 -- theorem trivial_case' (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
 theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
   let a := coeff f 0
-  let n := M ! + a ^ 2
+  let n := M ! * a ^ 2
 
   have hp3 : f = X * g + C a := by
     sorry
@@ -175,12 +178,14 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
     rw [eval_X]
     done
 
-  have hp5 : f.eval (M ! + a ^ 2) = (M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a := by
+  have hp5 : f.eval (M ! * a ^ 2) = (M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a := by
     simp only
     exact hp4
     done
 
-  have hp6 : ((M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+  have hp6 : ((M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw [@cast_comm]
+    rw [squares]
     sorry
     done
 
@@ -195,7 +200,7 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
   have np : M ≤ p :=
     le_of_not_ge fun h =>
       have h₁ : p ∣ functionAbsolute := minFac_dvd functionAbsolute
-      have h₂ : p ∣ 1 := sorry
+      have h₂ : p ∣ 1 := (Nat.dvd_add_iff_right h₁).2
     pp.not_dvd_one h₂
 
   have ppp : _root_.Prime p := by
