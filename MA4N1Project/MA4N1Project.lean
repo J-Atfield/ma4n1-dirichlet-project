@@ -8,6 +8,8 @@ open ZMod
 open Polynomial
 open Nat
 
+set_option maxHeartbeats 0
+
 ---------------------------------------------------------------------------------------------------
 -- Introduction:  The following namespace aims to prove some special cases of dirilichts theorem.
 -- These cases are: There exists infinitely many primes p of the form p = 4k + 1, p = 6k + 1 and
@@ -106,13 +108,16 @@ theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : p
     sorry
 
 theorem james_trivial {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.eval n) := by
-  have hp2 : f.eval 0 = 0 := by
-    rw [← coeff_zero_eq_eval_zero]
-    exact hp
+  let a := coeff f 0
+  let g := Polynomial.divX f
+  have hp2 : f = X * g + C a := by
+    exact (X_mul_divX_add f).symm
   have hp3 : f = X * g := by
-    sorry
+    rw[hp2]
+    simp only [eq_intCast, add_right_eq_self, Int.cast_eq_zero]
+    exact hp
   have hp4 : (X * g).eval n = n * g.eval n := by
-    simp_all only [mul_coeff_zero, coeff_X_zero, zero_mul, eval_mul, eval_X]
+    simp only [eval_mul, eval_X]
   rw [hp3]
   rw [hp4]
   exact Int.dvd_mul_right n (eval n g)
@@ -120,6 +125,10 @@ theorem james_trivial {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.
 
 theorem primeJames (p : ℕ): (_root_.Prime p) ↔ (Nat.Prime p) := by
   exact Iff.symm prime_iff
+  done
+
+theorem if_min_fac_then_p_dvd_f (hp : p = minFac (f)) : (p : ℤ) ∣ f := by
+  sorry
   done
 
 -- A proof of the trivial case of the fundamental lemma
@@ -140,17 +149,14 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
       pp.not_dvd_one h₂
   ⟨p, n, ppp, np, hp2⟩
 
-
--- An attempt at the proof of the non-trivial case of the fundamental lemma
-theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, root.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
   let a := coeff f 0
   let n := M ! * a ^ 2
   let g := Polynomial.divX f
-
   have hp3 : f = X * g + C a := by
     exact (X_mul_divX_add f).symm
   have hp4 : f.eval n = n * g.eval n + a := by
-    rw [hp3]
+    rw[hp3]
     rw [@eval_add]
     rw [@eval_C]
     rw [@eval_mul]
@@ -164,12 +170,13 @@ theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 �
     ring
   have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) ∣ a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
     exact Int.dvd_mul_left a (a * ↑M ! * eval (↑M ! * a ^ 2) g + 1)
-  have hp8 : f.eval n = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
-    rw [hp5]
-    rw [hp6]
+  have hp8 : (f.eval n ) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw[hp5]
+    rw[hp6]
   let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
   let p := minFac (functionAbsolute)
-  have f1 : functionAbsolute ≠ 1 := sorry -- Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have f1 : functionAbsolute ≠ 1 := by
+    sorry
   have pp : Nat.Prime p := minFac_prime f1
   have np : M ≤ p :=
     le_of_not_ge fun h =>
@@ -178,9 +185,15 @@ theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 �
     pp.not_dvd_one h₂
   have ppp : _root_.Prime p := by
     exact (primeJames p).mpr pp
-  have hp2 : (p : ℤ) ∣ f.eval n := by
-    sorry
-  ⟨p, n, ppp, np, hp2⟩
+  have hp9 : (p : ℤ) ∣ functionAbsolute := by
+    exact if_min_fac_then_p_dvd_f rfl
+  have hp10 : (functionAbsolute : ℤ) ∣ f.eval n := by
+    refine Int.natAbs_dvd.mpr ?_
+    rw [hp8]
+    apply hp7
+  have hp123 : ((p : ℤ) ∣ f.eval n) := by
+    exact Int.dvd_trans hp9 hp10
+  ⟨p, n, ppp, np, hp123⟩
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
 open scoped Polynomial in
