@@ -26,7 +26,7 @@ theorem element_of_set_divides_product_of_set (S : Finset ℤ) (x : ℤ) (hx : x
   sorry
   done
 
--- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | root.Prime p ∧ p ∣ f.eval n}
+-- def prime_divisors (f : ℤ[X]) (n : ℕ) : Set ℤ := {p : ℤ | _root_.Prime p ∧ p ∣ f.eval n}
 def prime_divisors (f : ℤ[X]) (n : ℕ) : Finset ℤ := sorry
 
 instance : Membership ℤ (prime_divisors f n) := sorry
@@ -67,18 +67,89 @@ theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : p
   rename_i prime_divisors
   have eval_neq_zero : f.eval 0 ≠ 0 := by
     sorry
-    done
   rw [my_b]
   rw [@mul_pow]
   rw [mul_comm]
   have assump : product_of_set prime_divisors_f ^ i * eval 0 f ^ i * coeff f i = coeff f i * product_of_set prime_divisors_f ^ i * eval 0 f ^ i := by
     ring
-    done
   rw [assump]
   have assump2 : p ∣ product_of_set prime_divisors_f := by
-
-    done
+    sorry
+  sorry
   done
+
+theorem james_trivial {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.eval n) := by
+  have hp2 : f.eval 0 = 0 := by
+    rw[<-coeff_zero_eq_eval_zero]
+    exact hp
+  have hp3 : f = X * g := by
+    sorry
+  have hp4 : (X * g).eval n = n * g.eval n := by
+    simp_all only [mul_coeff_zero, coeff_X_zero, zero_mul, eval_mul, eval_X]
+  rw [hp3]
+  rw [hp4]
+  exact Int.dvd_mul_right n (eval n g)
+  done
+
+theorem primeJames (p : ℕ): (_root_.Prime p) ↔ (Nat.Prime p) := by
+  exact Iff.symm prime_iff
+  done
+
+-- A proof of the trivial case of the fundamental lemma
+theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+  let p := minFac (M ! + 1)
+  let n := p
+  have f1 : M ! + 1 ≠ 1 := Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have pp : Nat.Prime p := minFac_prime f1
+  have ppp : _root_.Prime p := by
+    exact (primeJames p).mpr pp
+  have hp2 : (p:ℤ) ∣ f.eval p := by
+    apply james_trivial hp
+    exact f
+    done
+  have np : M ≤ p :=
+    le_of_not_ge fun h =>
+      have h₁ : p ∣ M ! := dvd_factorial (minFac_pos _) h
+      have h₂ : p ∣ 1 := (Nat.dvd_add_iff_right h₁).2 (minFac_dvd _)
+      pp.not_dvd_one h₂
+  ⟨p, n, ppp, np, hp2⟩
+
+
+-- An attempt at the proof of the non-trivial case of the fundamental lemma
+theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+  let a := coeff f 0
+  let n := M ! + a ^ 2
+  have hp3 : f = X * g + C a := by
+    sorry
+  have hp4 : f.eval n = n * g.eval n + a := by
+    rw [hp3]
+    rw [@eval_add]
+
+    rw [@eval_C]
+    rw [@eval_mul]
+    rw []
+    sorry
+  have hp5 : f.eval (M ! + a ^ 2) = (M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a := by
+    simp only
+    exact hp4
+  have hp6 : ((M ! + a ^ 2) * g.eval (M ! + a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    sorry
+  have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) = a * (M !) * (g.eval (M ! * a ^ 2)) + 1 := by
+    simp only
+  let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
+  let p := minFac (functionAbsolute)
+  have f1 : functionAbsolute ≠ 1 := sorry -- Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have pp : Nat.Prime p := minFac_prime f1
+  have np : M ≤ p :=
+    le_of_not_ge fun h =>
+      have h₁ : p ∣ functionAbsolute := minFac_dvd functionAbsolute
+      have h₂ : p ∣ 1 := sorry
+    pp.not_dvd_one h₂
+  have ppp : _root_.Prime p := by
+    exact (primeJames p).mpr pp
+  have hp2 : (p : ℤ) ∣ f.eval n := by
+    sorry
+  ⟨p, n, ppp, np, hp2⟩
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
 open scoped Polynomial in
