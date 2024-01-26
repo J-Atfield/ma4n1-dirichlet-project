@@ -55,22 +55,29 @@ theorem product_of_prime_divisors_dvd__pow_my_b (i : ℕ) (hi : i ≠ 0) : produ
   exact hi
   done
 
-theorem my_g_coefficients (f : ℤ[X]) (i : ℕ) (prime_divisors_f : Finset ℤ): (my_g f (my_b f prime_divisors_f)).coeff i = f.coeff (i) * b^i  / (f.eval 0):= sorry
+theorem my_g_coefficients (f : ℤ[X]) (i : ℕ) (prime_divisors_f : Finset ℤ): (my_g f (my_b f prime_divisors_f)).coeff i = f.coeff (i) * (my_b f prime_divisors_f) ^i  / (f.eval 0):= sorry
 
-theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) : (my_g f (my_b f prime_divisors_f)).coeff 0 = 1 :=by
-  rw [my_g_coefficients]
-  rw [← @_root_.pow_succ]
-  rw [Nat.zero_add]
-  rw [@coeff_zero_eq_eval_zero]
-  have h1 : eval 0 f ^ 1 = eval 0 f := by
-    rw [pow_one]
-    done
-  rw [h1]
+theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) : (my_g f (my_b f prime_divisors_f)).coeff 0 = 1 := by
+  rw [my_g_coefficients, @_root_.pow_zero, Int.mul_one, @coeff_zero_eq_eval_zero]
   exact Int.ediv_self h
   done
 
-theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : prime_divisors f n) (hS1 : S : Finset ℤ) (hS2 : p = product_of_set S) : p ∣ (my_g f (my_b f prime_divisors_f)).coeff i := by
-  sorry
+theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : prime_divisors f n) (S : Finset ℤ) (hS2 : p = product_of_set S) : p ∣ (my_g f (my_b f prime_divisors_f)).coeff i := by
+  rw [my_g_coefficients]
+  rename_i prime_divisors
+  have eval_neq_zero : f.eval 0 ≠ 0 := by
+    sorry
+    done
+  rw [my_b]
+  rw [@mul_pow]
+  rw [mul_comm]
+  have assump : product_of_set prime_divisors_f ^ i * eval 0 f ^ i * coeff f i = coeff f i * product_of_set prime_divisors_f ^ i * eval 0 f ^ i := by
+    ring
+    done
+  rw [assump]
+  have assump2 : p ∣ product_of_set prime_divisors_f := by
+
+    done
   done
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
@@ -80,6 +87,7 @@ lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.
     sorry
   have a_div_b (a : ℤ) : a ∣ b := by
     sorry
+  sorry
   done
 
 ---------------------------------------------------------------------------------------------------
