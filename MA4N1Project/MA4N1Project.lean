@@ -142,17 +142,19 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
 
 
 -- An attempt at the proof of the non-trivial case of the fundamental lemma
-theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
   let a := coeff f 0
   let n := M ! * a ^ 2
+  let g := Polynomial.divX f
+
   have hp3 : f = X * g + C a := by
-    sorry
+    exact (X_mul_divX_add f).symm
   have hp4 : f.eval n = n * g.eval n + a := by
     rw [hp3]
     rw [@eval_add]
     rw [@eval_C]
     rw [@eval_mul]
-    sorry
+    rw [eval_X]
   have hp5 : f.eval (M ! * a ^ 2) = (M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a := by
     simp only
     exact hp4
@@ -161,7 +163,7 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
     rw [sq a]
     ring
   have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) ∣ a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
-    sorry
+    exact Int.dvd_mul_left a (a * ↑M ! * eval (↑M ! * a ^ 2) g + 1)
   have hp8 : f.eval n = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
     rw [hp5]
     rw [hp6]
