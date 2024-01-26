@@ -106,6 +106,8 @@ theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : p
   rw [assump]
   have assump2 : p ∣ product_of_set prime_divisors_f := by
     sorry
+  sorry
+  done
 
 theorem james_trivial {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.eval n) := by
   let a := coeff f 0
@@ -149,7 +151,7 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
       pp.not_dvd_one h₂
   ⟨p, n, ppp, np, hp2⟩
 
-theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, root.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp : coeff f 0 ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
   let a := coeff f 0
   let n := M ! * a ^ 2
   let g := Polynomial.divX f
@@ -175,7 +177,16 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
     rw[hp6]
   let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
   let p := minFac (functionAbsolute)
-  have f1 : functionAbsolute ≠ 1 := by
+  have f2 : a * (M !) * (g.eval (M ! * a ^ 2)) ≠ 0 := by
+    have h_m : M ! ≠ 0 := by
+      exact factorial_ne_zero M
+    have h_a : a ≠ 0 := by
+      exact hp
+    have h_g : g.eval (M ! * a ^ 2) ≠ 0 := by
+      sorry
+    sorry
+  have f1 : functionAbsolute ≠ 1 := by -- needs f2
+    rw [@ne_one_iff_exists_prime_dvd]
     sorry
   have pp : Nat.Prime p := minFac_prime f1
   have np : M ≤ p :=
