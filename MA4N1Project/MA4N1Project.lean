@@ -62,6 +62,35 @@ theorem my_g_constant_term (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 �
   exact Int.ediv_self h
   done
 
+theorem test (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) (i : ℕ) : (my_g f (my_b f prime_divisors_f)).coeff i = coeff f i * (product_of_set prime_divisors_f ^ i ) * eval 0 f ^ (i-1) := by
+  let b := my_b f prime_divisors_f
+  rw [my_g_coefficients]
+  rw[my_b]
+  rw [←@coeff_zero_eq_eval_zero]
+  rw [@mul_pow]
+  ring_nf
+  have h : coeff f 0 ^ (i-1) = coeff f 0 ^ i / coeff f 0 := sorry
+  rw [h]
+  rw [@coeff_zero_eq_eval_zero]
+  have h2 (a b c d : ℤ) : a * b * c / d = a * b * (c / d) := by
+    sorry
+    done
+  rw[h2]
+  done
+
+theorem test1 (f : ℤ[X]) (hf : f.natDegree ≠ 0) (h : f.eval 0 ≠ 0) (i : ℕ) : (my_g f (my_b f prime_divisors_f )).coeff i ≡ 0 [ZMOD (product_of_set prime_divisors_f)]:= by
+  rw[test]
+  · rw [mul_comm (coeff f i) (product_of_set prime_divisors_f ^ i)]
+    have h2 : product_of_set prime_divisors_f ^ i = product_of_set prime_divisors_f * product_of_set prime_divisors_f ^ (i-1) := by
+      sorry
+      done
+    rw [h2]
+
+
+  · exact hf
+  · exact h
+  done
+
 theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : prime_divisors f n) (S : Finset ℤ) (hS2 : p = product_of_set S) : p ∣ (my_g f (my_b f prime_divisors_f)).coeff i := by
   rw [my_g_coefficients]
   rename_i prime_divisors
@@ -75,12 +104,10 @@ theorem product_of_divisors_divides_ith_coeff_my_g (f : ℤ[X]) (i : ℕ) (S : p
   rw [assump]
   have assump2 : p ∣ product_of_set prime_divisors_f := by
     sorry
-  sorry
-  done
 
 theorem james_trivial {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.eval n) := by
   have hp2 : f.eval 0 = 0 := by
-    rw[<-coeff_zero_eq_eval_zero]
+    rw [← coeff_zero_eq_eval_zero]
     exact hp
   have hp3 : f = X * g := by
     sorry
@@ -103,10 +130,9 @@ theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _roo
   have pp : Nat.Prime p := minFac_prime f1
   have ppp : _root_.Prime p := by
     exact (primeJames p).mpr pp
-  have hp2 : (p:ℤ) ∣ f.eval p := by
+  have hp2 : (p : ℤ) ∣ f.eval p := by
     apply james_trivial hp
     exact f
-    done
   have np : M ≤ p :=
     le_of_not_ge fun h =>
       have h₁ : p ∣ M ! := dvd_factorial (minFac_pos _) h
@@ -131,9 +157,14 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
     simp only
     exact hp4
   have hp6 : ((M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw [@cast_comm]
+    rw [sq a]
+    ring
+  have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) ∣ a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
     sorry
-  have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) = a * (M !) * (g.eval (M ! * a ^ 2)) + 1 := by
-    simp only
+  have hp8 : f.eval n = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw [hp5]
+    rw [hp6]
   let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
   let p := minFac (functionAbsolute)
   have f1 : functionAbsolute ≠ 1 := sorry -- Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
@@ -152,10 +183,6 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
 open scoped Polynomial in
 lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧  p ∣ f.eval n := by
-  have h_b_eq (b : ℤ) (a : ℤ) : b = a * f.eval 0 := by
-    sorry
-  have a_div_b (a : ℤ) : a ∣ b := by
-    sorry
   sorry
   done
 
