@@ -189,7 +189,7 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ} (hp : Odd p) : ¬(
   done
 
 -- Proving that if p is odd and congruent to 1 mod 4, then it is not congruent to 3 mod 4
-theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) -> ¬(p % 4 = 3) := by
+theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} : (p % 4 = 1) -> ¬(p % 4 = 3) := by
   intro h1
   rw [h1]
   exact ne_of_beq_eq_false rfl
@@ -209,13 +209,10 @@ theorem square_eq_neg_one_mod_p_imp_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
   done
 
 -- Showing the backward direction (←)
-theorem p_eq_one_mod_four_imp_square_eq_neg_one_mod_p (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
+theorem p_eq_one_mod_four_imp_square_eq_neg_one_mod_p (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
   have hp4 : ¬(p % 4 = 3) := by
     apply p_one_mod_four_implies_p_not_three_mod_four
     case a => apply hp3
-    apply prime_gt_two_is_odd
-    case hp2 => apply hp
-    case hp => apply hp2
     done
   rw [ZMod.exists_sq_eq_neg_one_iff]
   simp only [ne_eq]
@@ -232,8 +229,6 @@ theorem square_eq_neg_one_mod_p_iff_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
     done
   case mpr =>
     apply p_eq_one_mod_four_imp_square_eq_neg_one_mod_p
-    case hp => apply hp
-    case hp2 => apply hp2
     done
   done
 
