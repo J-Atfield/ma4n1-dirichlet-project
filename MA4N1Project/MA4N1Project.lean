@@ -136,6 +136,10 @@ theorem if_min_fac_then_p_dvd_f (hp : p = minFac f) : (p : ℤ) ∣ f := by
   exact Int.ofNat_dvd.mpr h_p_dvd_f
   done
 
+theorem mul_three_non_zero_ne_zero (a b c : ℤ) (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0) : a * b * c ≠ 0 := by
+  simp_all only [ne_eq, _root_.mul_eq_zero, or_self, not_false_eq_true]
+  done
+
 -- A proof of the trivial case of the fundamental lemma
 theorem trivial_case (M : ℕ) {f : ℤ[X]} (hp : coeff f 0 = 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
   let p := minFac (M ! + 1)
@@ -187,7 +191,10 @@ theorem non_trivial_case {f : ℤ[X]} {g : ℤ[X]} (hf : f.natDegree ≠ 0) (hp 
       exact hp
     have h_g : g.eval (M ! * a ^ 2) ≠ 0 := by
       sorry
-    sorry
+    apply mul_three_non_zero_ne_zero a (M !) (g.eval (M ! * a ^ 2))
+    exact h_a
+    exact Int.ofNat_ne_zero.mpr h_m
+    exact h_g
   have f1 : functionAbsolute ≠ 1 := by -- needs f2
     -- rw [@ne_one_iff_exists_prime_dvd]
     -- rw [functionAbsolute]
