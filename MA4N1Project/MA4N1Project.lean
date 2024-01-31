@@ -8,6 +8,8 @@ open ZMod
 open Polynomial
 open Nat
 
+set_option maxHeartbeats 0
+
 ---------------------------------------------------------------------------------------------------
 -- Introduction:  The following namespace aims to prove some special cases of dirilichts theorem.
 -- These cases are: There exists infinitely many primes p of the form p = 4k + 1, p = 6k + 1 and
@@ -19,16 +21,134 @@ open Nat
 -- the cases which are proved in this namespace: 4k + 1, 6k + 1 and 8k + 1
 ---------------------------------------------------------------------------------------------------
 
--- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
-open scoped Polynomial in
-lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℤ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
-  apply?
+-- A polynomial with constant term 0 is divisible by n when evaluated at n
+theorem n_dvd_fn_if_const_zero {f : ℤ[X]} {g : ℤ[X]} (hp : coeff f 0 = 0) : n ∣ (f.eval n) := by
+  let a := coeff f 0
+  let g := Polynomial.divX f
+  have hp2 : f = X * g + C a := by
+    exact (X_mul_divX_add f).symm
+  have hp3 : f = X * g := by
+    rw[hp2]
+    simp only [eq_intCast, add_right_eq_self, Int.cast_eq_zero]
+    exact hp
+  have hp4 : (X * g).eval n = n * g.eval n := by
+    simp only [eval_mul, eval_X]
+  rw [hp3]
+  rw [hp4]
+  exact Int.dvd_mul_right n (eval n g)
   done
 
----------------------------------------------------------------------------------------------------
--- Section 2: The following section contains some prelimnary theorems and lemmas which will be used
--- throughout the rest of the proofs.
----------------------------------------------------------------------------------------------------
+-- Equivalence between the definition of prime in the mathlib library and the definition of prime
+theorem root_prime_iff_nat_prime (p : ℕ): (_root_.Prime p) ↔ (Nat.Prime p) := by
+  exact Iff.symm prime_iff
+  done
+
+-- If p is the smallest factor of f, then p divides f
+theorem if_min_fac_then_p_dvd_f (hp : p = minFac f) : (p : ℤ) ∣ f := by
+  have h_p_dvd_f : p ∣ f := by
+    rw [hp]
+    exact minFac_dvd f
+  exact Int.ofNat_dvd.mpr h_p_dvd_f
+  done
+
+-- Product of three non-zero integers is non-zero
+theorem mul_three_non_zero_ne_zero (a b c : ℤ) (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0) : a * b * c ≠ 0 := by
+  simp_all only [ne_eq, _root_.mul_eq_zero, or_self, not_false_eq_true]
+  done
+
+-- A proof of the trivial case of the fundamental lemma i.e. when the constant term of f is 0
+theorem trivial_case {f : ℤ[X]} (M : ℕ) (hp : coeff f 0 = 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+  let p := minFac (M ! + 1)
+  let n := p
+  have f1 : M ! + 1 ≠ 1 := Nat.ne_of_gt <| succ_lt_succ <| factorial_pos _
+  have pp : Nat.Prime p := minFac_prime f1
+  have ppp : _root_.Prime p := by
+    exact (root_prime_iff_nat_prime p).mpr pp
+  have hp2 : (p : ℤ) ∣ f.eval p := by
+    apply n_dvd_fn_if_const_zero hp
+    exact f
+  have np : M ≤ p :=
+    le_of_not_ge fun h =>
+      have h₁ : p ∣ M ! := dvd_factorial (minFac_pos _) h
+      have h₂ : p ∣ 1 := (Nat.dvd_add_iff_right h₁).2 (minFac_dvd _)
+      pp.not_dvd_one h₂
+  ⟨p, n, ppp, np, hp2⟩
+
+-- A proof of the non-trivial case of the fundamental lemma i.e. when the constant term of f is non-zero
+theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) (hp : coeff f 0 ≠ 0) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n :=
+  let a := coeff f 0
+  let n := M ! * a ^ 2
+  let g := Polynomial.divX f
+  have hp3 : f = X * g + C a := by
+    exact (X_mul_divX_add f).symm
+  have hp4 : f.eval n = n * g.eval n + a := by
+    rw[hp3]
+    rw [@eval_add]
+    rw [@eval_C]
+    rw [@eval_mul]
+    rw [eval_X]
+  have hp5 : f.eval (M ! * a ^ 2) = (M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a := by
+    simp only
+    exact hp4
+  have hp6 : ((M ! * a ^ 2) * g.eval (M ! * a ^ 2) + a) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw [@cast_comm]
+    rw [sq a]
+    ring
+  have hp7 : (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) ∣ a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    exact Int.dvd_mul_left a (a * ↑M ! * eval (↑M ! * a ^ 2) g + 1)
+  have hp8 : (f.eval n ) = a * (a * (M !) * (g.eval (M ! * a ^ 2)) + 1) := by
+    rw[hp5]
+    rw[hp6]
+  let functionAbsolute := Int.natAbs (a * (M !) * (g.eval (M ! * a ^ 2)) + 1)
+  let p := minFac (functionAbsolute)
+  have f2 : a * (M !) * (g.eval (M ! * a ^ 2)) ≠ 0 := by
+    have h_m : M ! ≠ 0 := by
+      exact factorial_ne_zero M
+    have h_a : a ≠ 0 := by
+      exact hp
+    have h_g : g.eval (M ! * a ^ 2) ≠ 0 := by
+      sorry
+    apply mul_three_non_zero_ne_zero a (M !) (g.eval (M ! * a ^ 2))
+    exact h_a
+    exact Int.ofNat_ne_zero.mpr h_m
+    exact h_g
+  have f1 : functionAbsolute ≠ 1 := by -- needs f2, we are assuming g ≠ 0 by choice of a and m
+    -- rw [@ne_one_iff_exists_prime_dvd]
+    -- rw [functionAbsolute]
+    sorry
+  have pp : Nat.Prime p := minFac_prime f1
+  have np : M ≤ p :=
+    le_of_not_ge fun h =>
+      have h₁ : p ∣ functionAbsolute := minFac_dvd functionAbsolute
+      have h₂ : p ∣ 1 := sorry
+    pp.not_dvd_one h₂
+  have ppp : _root_.Prime p := by
+    exact (root_prime_iff_nat_prime p).mpr pp
+  have hp9 : (p : ℤ) ∣ functionAbsolute := by
+    exact if_min_fac_then_p_dvd_f rfl
+  have hp10 : (functionAbsolute : ℤ) ∣ f.eval n := by
+    refine Int.natAbs_dvd.mpr ?_
+    rw [hp8]
+    apply hp7
+  have hp123 : ((p : ℤ) ∣ f.eval n) := by
+    exact Int.dvd_trans hp9 hp10
+  ⟨p, n, ppp, np, hp123⟩
+
+-- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
+lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n := by
+  have hp : coeff f 0 ≠ 0 ∨ coeff f 0 = 0 := by
+    exact ne_or_eq (coeff f 0) 0
+  cases hp with
+  | inl h =>
+    exact non_trivial_case hf M h
+  | inr h =>
+    exact trivial_case M h
+  done
+
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 2: The following section contains some prelimnary theorems and lemmas which will be used
+-- -- throughout the rest of the proofs.
+-- ---------------------------------------------------------------------------------------------------
 
 -- Any prime greater than 2 is odd
 theorem prime_gt_two_is_odd {p : ℕ} (hp : Nat.Prime p) (hp2 : p > 2) : Odd p := by
@@ -53,10 +173,10 @@ theorem p_odd_then_one_or_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) �
   exact hp
   done
 
----------------------------------------------------------------------------------------------------
--- Section 3: The following three theorems prove some equivalences between vaiour congruences which
--- are used to throughout later theorems
----------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 3: The following three theorems prove some equivalences between vaiour congruences which
+-- -- are used to throughout later theorems
+-- ---------------------------------------------------------------------------------------------------
 
 -- Proving that if p is odd and is not congruent to 3 mod 4, then it is congruent to 1 mod 4
 theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ} (hp : Odd p) : ¬(p % 4 = 3) -> (p % 4 = 1) := by
@@ -69,7 +189,7 @@ theorem p_not_three_mod_four_implies_p_one_mod_four {p : ℕ} (hp : Odd p) : ¬(
   done
 
 -- Proving that if p is odd and congruent to 1 mod 4, then it is not congruent to 3 mod 4
-theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} (hp : Odd p) : (p % 4 = 1) -> ¬(p % 4 = 3) := by
+theorem p_one_mod_four_implies_p_not_three_mod_four {p : ℕ} : (p % 4 = 1) -> ¬(p % 4 = 3) := by
   intro h1
   rw [h1]
   exact ne_of_beq_eq_false rfl
@@ -89,13 +209,10 @@ theorem square_eq_neg_one_mod_p_imp_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
   done
 
 -- Showing the backward direction (←)
-theorem p_eq_one_mod_four_imp_square_eq_neg_one_mod_p (hp : p > 2) (hp2 : p.Prime) (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
+theorem p_eq_one_mod_four_imp_square_eq_neg_one_mod_p (hp3 : p % 4 = 1): IsSquare (-1 : ZMod p) := by
   have hp4 : ¬(p % 4 = 3) := by
     apply p_one_mod_four_implies_p_not_three_mod_four
     case a => apply hp3
-    apply prime_gt_two_is_odd
-    case hp2 => apply hp
-    case hp => apply hp2
     done
   rw [ZMod.exists_sq_eq_neg_one_iff]
   simp only [ne_eq]
@@ -112,8 +229,6 @@ theorem square_eq_neg_one_mod_p_iff_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
     done
   case mpr =>
     apply p_eq_one_mod_four_imp_square_eq_neg_one_mod_p
-    case hp => apply hp
-    case hp2 => apply hp2
     done
   done
 
@@ -179,10 +294,10 @@ theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2)
       exact Nat.eq_add_of_sub_eq this h
   done
 
----------------------------------------------------------------------------------------------------
--- Section 4: The following theorem proves our first special case. That there exist infinitely many
--- primes p of the form 4k + 1.
----------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 4: The following theorem proves our first special case. That there exist infinitely many
+-- -- primes p of the form 4k + 1.
+-- ---------------------------------------------------------------------------------------------------
 
 -- Degree of x^2 + 1 is 2
 theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
@@ -191,7 +306,7 @@ theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 1)
-theorem exists_pn_st_p_div_fn (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+theorem exists_pn_st_p_div_fn (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
   apply two.one
   case hf =>
     rw [hp]
@@ -200,13 +315,13 @@ theorem exists_pn_st_p_div_fn (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Pr
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 1)
-theorem exists_pn_st_p_div_fn' : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]):= by
+theorem exists_pn_st_p_div_fn' : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 1 : ℤ[X]):= by
   apply exists_pn_st_p_div_fn
   case hp => simp only
   done
 
 -- Proving there exists infinite primes of the form p = 4k + 1
-theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 1 : ℤ[X]) := by
+theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 1 : ℤ[X]) := by
   have h_cong_1 : p % 4 = 1 := by
     rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
     exact hs
@@ -223,11 +338,11 @@ theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod
 
 variable (q : ℕ) [Fact q.Prime]
 
----------------------------------------------------------------------------------------------------
--- Section 5: The theorems split_fration and odd_int_div allow us to adapt eulers criterion to be
--- applicable to our case. Most notably, odd_int_div states that for an odd number p, when divided
--- by 2 using integer division, p / 2 = (p - 1) / 2.
----------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 5: The theorems split_fration and odd_int_div allow us to adapt eulers criterion to be
+-- -- applicable to our case. Most notably, odd_int_div states that for an odd number p, when divided
+-- -- by 2 using integer division, p / 2 = (p - 1) / 2.
+-- ---------------------------------------------------------------------------------------------------
 
 -- Have a theorem which allows you to split the fraction and
 -- allow you to evaluate 1/2 to 0 with the integer division
@@ -249,11 +364,11 @@ theorem odd_int_div {p : ℕ} (hp : Odd p) : (p / 2) = ((p - 1) / 2) := by
   · norm_num
   done
 
----------------------------------------------------------------------------------------------------
--- Section 6: The following theorems establish the equality between various legendre symbols. These
--- are typically used in in the proof of the special case of 6k + 1, and allows us to use the throrems
--- in a form which applies correctly for our forms.
----------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 6: The following theorems establish the equality between various legendre symbols. These
+-- -- are typically used in in the proof of the special case of 6k + 1, and allows us to use the throrems
+-- -- in a form which applies correctly for our forms.
+-- ---------------------------------------------------------------------------------------------------
 
 -- a ∈ ZMod p is zero iff a and p not coprime
 theorem eq_zero_iff_gcd_ne_one {a : ℤ} {p : ℕ} [pp : Fact p.Prime] : (a : ZMod p) = 0 ↔ a.gcd p ≠ 1 := by
@@ -309,7 +424,7 @@ theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 3)
-theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
   apply two.one
   case hf =>
     rw [hp]
@@ -318,7 +433,7 @@ theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 3)
-theorem exists_prime_divisor_for_quad_plus_three_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]):= by
+theorem exists_prime_divisor_for_quad_plus_three_poly_eval : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 3 : ℤ[X]):= by
   apply exists_prime_div_of_poly_eval
   rfl
   done
@@ -425,7 +540,7 @@ lemma IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one (hp : p.Prime) (hp2 : p
   done
 
 -- There exists infinitely many primes of the form p = 6k + 1
-theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^2 + 3 : ℤ[X]) := by
+theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 3 : ℤ[X]) := by
   have hp3 : p > 2 := by
     exact lt_of_succ_lt hp2
   have hp_odd : Odd p := by
@@ -469,10 +584,10 @@ theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod
     exact exists_prime_divisor_for_quad_plus_three_poly_eval
   done
 
----------------------------------------------------------------------------------------------------
--- Section 7: The following theorems establish a key congruence relation, a consequence of Fermats Little
--- theorem, and then use such relation to prove the special case of 8k + 1.
----------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------
+-- -- Section 7: The following theorems establish a key congruence relation, a consequence of Fermats Little
+-- -- theorem, and then use such relation to prove the special case of 8k + 1.
+-- ---------------------------------------------------------------------------------------------------
 
 -- Degree of x^4 + 1 is 4
 theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
@@ -481,7 +596,7 @@ theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^4 + 1)
-theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ f.eval n := by
+theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
   apply two.one
   case hf =>
     rw [hp]
@@ -490,7 +605,7 @@ theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : �
   done
 
 -- Proving that there exists a pair p prime, n such that p | (n^4 + 1)
-theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]):= by
+theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^4 + 1 : ℤ[X]):= by
   apply exists_prime_div_of_x_fouth_poly_eval
   rfl
   done
@@ -646,7 +761,7 @@ theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha
   done
 
 -- There are infinite primes of the form 8k + 1
-theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hs : IsSquare (-1 : ZMod p)) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ M ≤ p ∧ p ∣ eval n (X^4 + 1 : ℤ[X]) := by
+theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hs : IsSquare (-1 : ZMod p)) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (∃ (k : ℕ), p = 8*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^4 + 1 : ℤ[X]) := by
   have h_p_gt_three : p > 3 := by
     apply lt_of_succ_lt
     apply lt_of_succ_lt
