@@ -234,27 +234,27 @@ theorem square_eq_neg_one_mod_p_iff_p_eq_one_mod_four (hp : p > 2) (hp2 : p.Prim
   done
 
 -- Establishes the equivalence between p % 4 = 1 and the existence of a natural number k such that p = 4*k + 1 for a prime number p
-theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
+theorem p_mod_4_eq_one_iff_p_eq_4k_plus_one' {p : ℕ} (hp : p.Prime) : (p % 4 = 1) ↔ (∃ (k : ℕ), p = 4*k + 1) := by
   apply Iff.intro
   case mpr =>
     simp only [forall_exists_index]
-    intro k h_4k_1
-    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    intro k h_four_k_one
+    rw [h_four_k_one, add_mod, mul_mod_right, zero_add, mod_mod]
     exact rfl
   case mp =>
-    intro hp_mod_4
+    intro hp_mod_four
     have h_mod_equiv : 1 ≡ p [MOD 4] := by
-      rw [← hp_mod_4]
+      rw [← hp_mod_four]
       exact mod_modEq p 4
     have h_four_div_p_minus_one : 4 ∣ (p - 1) := by
       rw [← modEq_iff_dvd']
       apply h_mod_equiv
       refine one_le_iff_ne_zero.mpr ?_
       exact Nat.Prime.ne_zero hp
-    have h_exists_k_p1_eq_k4 : ∃ (k : ℕ), p-1=k*4 := by
+    have h_exists_k_p_minus_one_eq_k_mul_four : ∃ (k : ℕ), p-1=k*4 := by
       apply exists_eq_mul_left_of_dvd
       exact h_four_div_p_minus_one
-    cases h_exists_k_p1_eq_k4 with
+    cases h_exists_k_p_minus_one_eq_k_mul_four with
     | intro k h =>
       use k
       rw [mul_comm]
@@ -265,27 +265,27 @@ theorem p_mod_4_eq_one_iff_p_eq_4k_plus_1' {p : ℕ} (hp : p.Prime) : (p % 4 = 1
   done
 
 -- Shows that for a prime number p, p % (n+2) = 1 is equivalent to the existence of a natural number k such that p = (n+2)*k + 1
-theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2) = 1) ↔ (∃ (k : ℕ), p = (n+2)*k + 1) := by
+theorem p_mod_n_eq_one_iff_p_eq_nk_plus_one' {p : ℕ} (hp : p.Prime) : (p % (n+2) = 1) ↔ (∃ (k : ℕ), p = (n+2)*k + 1) := by
   apply Iff.intro
   case mpr =>
     simp only [forall_exists_index]
-    intro k h_nk_1
-    rw [h_nk_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    intro k h_nk_one
+    rw [h_nk_one, add_mod, mul_mod_right, zero_add, mod_mod]
     apply one_mod
   case mp =>
-    intro hp_mod_n_plus_2
+    intro hp_mod_n_plus_two
     have h_mod_equiv : 1 ≡ p [MOD (n+2)] := by
-      rw [← hp_mod_n_plus_2]
+      rw [← hp_mod_n_plus_two]
       exact mod_modEq p (n+2)
-    have h_n_plus_2_div_p_minus_one : (n + 2) ∣ (p - 1) := by
+    have h_n_plus_two_div_p_minus_one : (n + 2) ∣ (p - 1) := by
       rw [← modEq_iff_dvd']
       apply h_mod_equiv
       refine one_le_iff_ne_zero.mpr ?_
       exact Nat.Prime.ne_zero hp
-    have h_exists_k_p1_eq_kn : ∃ (k : ℕ), p-1=k*(n+2) := by
+    have h_exists_k_p_minus_one_eq_kn : ∃ (k : ℕ), p-1=k*(n+2) := by
       apply exists_eq_mul_left_of_dvd
-      exact h_n_plus_2_div_p_minus_one
-    cases h_exists_k_p1_eq_kn with
+      exact h_n_plus_two_div_p_minus_one
+    cases h_exists_k_p_minus_one_eq_kn with
     | intro k h =>
       use k
       rw [mul_comm]
@@ -301,7 +301,7 @@ theorem p_mod_n_eq_one_iff_p_eq_nk_plus_1' {p : ℕ} (hp : p.Prime) : (p % (n+2)
 -- ---------------------------------------------------------------------------------------------------
 
 -- Degree of x^2 + 1 is 2
-theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
+theorem x_squared_degree_two : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
   rw [natDegree_add_eq_left_of_natDegree_lt] <;>
   simp
   done
@@ -311,7 +311,7 @@ theorem exists_pn_st_p_div_fn (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Pr
   apply fundamental_lemma
   case hf =>
     rw [hp]
-    rw [x_squared_degree_2]
+    rw [x_squared_degree_two]
     simp only
   done
 
@@ -322,17 +322,16 @@ theorem exists_pn_st_p_div_fn' : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧
   done
 
 -- Proving there exists infinite primes of the form p = 4k + 1
-theorem inf_p_4k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) :
-  (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 1 : ℤ[X]) := by
-  have h_cong_1 : p % 4 = 1 := by
+theorem inf_p_four_k_plus_one (hp : p.Prime) (hp2 : p > 2) (hs : IsSquare (-1 : ZMod p)) : (∃ (k : ℕ), p = 4*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 1 : ℤ[X]) := by
+  have h_cong_one : p % 4 = 1 := by
     rw [← square_eq_neg_one_mod_p_iff_p_eq_one_mod_four]
     exact hs
     exact hp2
     exact hp
-  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_1']
+  rw [← p_mod_4_eq_one_iff_p_eq_4k_plus_one']
   apply And.intro
   case left =>
-    apply h_cong_1
+    apply h_cong_one
   case right =>
     apply exists_pn_st_p_div_fn'
   exact hp
@@ -579,7 +578,7 @@ theorem inf_p_six_k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : Z
     exact h_cong_one_two_mul_three
   apply And.intro
   case left =>
-    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_1']
+    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_one']
     norm_num
     exact h_p_cong_mod_six
     exact hp
@@ -593,7 +592,7 @@ theorem inf_p_six_k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : Z
 -- ---------------------------------------------------------------------------------------------------
 
 -- Degree of x^4 + 1 is 4
-theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
+theorem x_fouth_plus_one_degree_four : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
   rw [natDegree_add_eq_left_of_natDegree_lt] <;>
   simp
   done
@@ -603,7 +602,7 @@ theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : �
   apply fundamental_lemma
   case hf =>
     rw [hp]
-    rw [x_fouth_plus_one_degree_4]
+    rw [x_fouth_plus_one_degree_four]
     simp only
   done
 
@@ -614,7 +613,7 @@ theorem exists_prime_divisor_for_quart_plus_one_poly_eval : ∃ p n, _root_.Prim
   done
 
 -- (a^(p-1)) ≡ (a^4)^((p-1)/4) [ZMOD p], first in chain of congruences
-theorem pow_equiv_to_pow_mul_4_div_4 (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
+theorem pow_equiv_to_pow_mul_four_div_four (hp2 : 4 ∣ p - 1) (a : ZMod p) : (a^(p-1)) = (a^4)^((p-1)/4) := by
   rw [← @pow_mul, Nat.mul_comm, Nat.div_mul_cancel hp2]
   done
 
@@ -626,7 +625,7 @@ theorem pow_of_a_equiv_pow_of_neg_1 (a : ZMod p) (ha2 : a^4 = -1) : (a^4)^((p-1)
 -- 1 ≡ (a^4)^((p-1)/4) [ZMOD p], last part of chain of congruences
 theorem one_equiv_pow_of_neg_one_zmod_p (hp3 : 4 ∣ p - 1) (a : ZMod p) (ha1 : a ≠ 0) (ha2 : a^4 = -1) : (1 : ZMod p) = (-1)^((p-1)/4) := by
   rw [← pow_of_a_equiv_pow_of_neg_1]
-  rw [← pow_equiv_to_pow_mul_4_div_4 p]
+  rw [← pow_equiv_to_pow_mul_four_div_four p]
   rw [pow_card_sub_one_eq_one ha1]
   exact hp3
   exact ha2
@@ -651,26 +650,26 @@ theorem one_mod_four_iff_one_or_five_mod_eight {n : ℕ} : n % 4 = 1 ↔ n % 8 =
     fun h => Or.elim h one_mod_eight_then_one_mod_four five_mod_eight_then_one_mod_four⟩
 
 -- p = 8k + 5 iff p % 8 = 5
-theorem p_mod_8_eq_one_iff_p_eq_8k_plus_5 {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
+theorem p_mod_eight_eq_one_iff_p_eq_eight_mul_k_plus_5 {p : ℕ} (hp2 : p > 5): (p % 8 = 5) ↔ (∃ (k : ℕ), p = 8*k + 5) := by
   apply Iff.intro
   case mpr =>
     simp only [forall_exists_index]
-    intro k h_4k_1
-    rw [h_4k_1, add_mod, mul_mod_right, zero_add, mod_mod]
+    intro k h_4k_one
+    rw [h_4k_one, add_mod, mul_mod_right, zero_add, mod_mod]
     exact rfl
   case mp =>
-    intro hp_mod_4
+    intro hp_mod_four
     have h_mod_equiv : 5 ≡ p [MOD 8] := by
-      rw [← hp_mod_4]
+      rw [← hp_mod_four]
       exact mod_modEq p 8
     have h_four_div_p_minus_one : 8 ∣ (p - 5) := by
       rw [← modEq_iff_dvd']
       apply h_mod_equiv
       exact Nat.le_of_lt hp2
-    have h_exists_k_p1_eq_k4 : ∃ (k : ℕ), p-5=k*8 := by
+    have h_exists_k_p1_eq_k_mul_four : ∃ (k : ℕ), p-5=k*8 := by
       apply exists_eq_mul_left_of_dvd
       exact h_four_div_p_minus_one
-    cases h_exists_k_p1_eq_k4 with
+    cases h_exists_k_p1_eq_k_mul_four with
     | intro k h =>
       use k
       rw [mul_comm]
@@ -698,7 +697,7 @@ theorem eight_k_plus_4_div_4_odd : (((8 * k) + 4) / 4) = 2 * k + 1:= by
 -- The power (p-1)/4 is odd if p % 8 = 5
 theorem fraction_is_odd (hp : p % 8 = 5) (ha : p > 5) : Odd ((p - 1) / 4) := by
   have hp2 : (∃ (k : ℕ), p = 8*k + 5) := by
-    rw [← p_mod_8_eq_one_iff_p_eq_8k_plus_5]
+    rw [← p_mod_eight_eq_one_iff_p_eq_eight_mul_k_plus_5]
     exact hp
     exact ha
     done
@@ -745,7 +744,7 @@ theorem pow_of_neg_one_eq_neg_one_if_p_mod_8_5' (hp : p % 8 = 5) (hp2 : ((-1) : 
 
 -- p % 8 = 1 if power of -1 is equivalent to 1 in ZMod p
 theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha3 : p > 5) (ha5 : Odd p) : ((-1) : ZMod p) ^ ((p - 1) / 4) = 1 -> p % 8 = 1 := by
-  rw [p_mod_n_eq_one_iff_p_eq_nk_plus_1']
+  rw [p_mod_n_eq_one_iff_p_eq_nk_plus_one']
   norm_num
   intro ha4
   have hp2 : p % 8 = 1 ∨ p % 8 = 5 := by
@@ -758,7 +757,7 @@ theorem pow_of_neg_one_eq_one_imp_p_mod_8_1 (hp : p % 4 = 1) (ha2 : p.Prime) (ha
   have hp4 : ¬(p % 8 = 5) -> (p % 8 = 1) := by
     intro _
     simp_all only [ge_iff_le, odd_iff_not_even, or_false, OfNat.one_ne_ofNat, not_false_eq_true]
-  refine (p_mod_n_eq_one_iff_p_eq_nk_plus_1' ?hp).mp (hp4 hp3)
+  refine (p_mod_n_eq_one_iff_p_eq_nk_plus_one' ?hp).mp (hp4 hp3)
   exact ha2
   exact ha2
   done
@@ -792,7 +791,7 @@ theorem inf_p_8k_plus_one (hp : p.Prime) (hp2 : p > 5) (hs : IsSquare (-1 : ZMod
     done
   apply And.intro
   case left =>
-    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_1']
+    rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_one']
     norm_num
     apply pow_of_neg_one_eq_one_imp_p_mod_8_1
     exact h_cong_1
