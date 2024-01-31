@@ -8,6 +8,7 @@ open ZMod
 open Polynomial
 open Nat
 
+-- Required
 set_option maxHeartbeats 0
 
 ---------------------------------------------------------------------------------------------------
@@ -401,19 +402,19 @@ lemma primes_coprime {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
 
 -- 3 and p coprime if p ≠ 3
 theorem gcd_three_prime_not_three_is_one (hp : p.Prime) (hp2 : p ≠ 3) : Int.gcd 3 p = 1 := by
-  have h_3_prime : Nat.Prime 3 := by
+  have h_three_prime : Nat.Prime 3 := by
     exact prime_three
   have hp2' : 3 ≠ p := by
     exact fun a => hp2 (Eq.symm a)
   have h_3_p_coprime : Coprime 3 p := by
-    exact primes_coprime h_3_prime hp hp2'
+    exact primes_coprime h_three_prime hp hp2'
   rename_i _ _
   simp_all only [ne_eq]
   exact h_3_p_coprime
   done
 
 -- Degree of x^2 + 3 is 2
-theorem x_squared_plus_three_degree_2 : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
+theorem x_squared_plus_three_degree_two : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := by
   rw [natDegree_add_eq_left_of_natDegree_lt]
   · exact natDegree_X_pow 2
   have h : natDegree (3 : ℤ[X]) = 0 := by
@@ -428,7 +429,7 @@ theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _
   apply fundamental_lemma
   case hf =>
     rw [hp]
-    rw [x_squared_plus_three_degree_2]
+    rw [x_squared_plus_three_degree_two]
     simp only
   done
 
@@ -439,7 +440,7 @@ theorem exists_prime_divisor_for_quad_plus_three_poly_eval : ∃ p n, _root_.Pri
   done
 
 -- p % 3 = 1 if legendreSym 3 p = 1 in ZMod p
-theorem legendreSym_3_p_eq_1_imp_p_mod_3_1 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+theorem legendreSym_three_p_eq_one_imp_p_mod_three_one : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
   rw [legendreSym.eq_pow, odd_int_div]
   norm_num
   · intro h
@@ -513,7 +514,7 @@ theorem legendre_neg_q_p_eq_legendre_p_q (hp : q % 4 = 3) (hp2 : p > 2) (hp3 : N
   done
 
 -- legendreSym p (-3) = legendreSym 3 p
-theorem legendre_neg_3_p_eq_legendre_p_3 (hp2 : p > 2) (hp3 : Nat.Prime p) : legendreSym p (-3) = legendreSym 3 p := by
+theorem legendre_neg_three_p_eq_legendre_p_three (hp2 : p > 2) (hp3 : Nat.Prime p) : legendreSym p (-3) = legendreSym 3 p := by
   apply legendre_neg_q_p_eq_legendre_p_q
   case hp =>
     rename_i inst _
@@ -540,45 +541,46 @@ lemma IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one (hp : p.Prime) (hp2 : p
   done
 
 -- There exists infinitely many primes of the form p = 6k + 1
-theorem inf_p_6k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod p)) : (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 3 : ℤ[X]) := by
+theorem inf_p_six_k_plus_one (hp : p.Prime) (hp2 : p > 3) (hs : IsSquare (-3 : ZMod p)) :
+  (∃ (k : ℕ), p = 6*k+1) ∧ ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ eval n (X^2 + 3 : ℤ[X]) := by
   have hp3 : p > 2 := by
     exact lt_of_succ_lt hp2
   have hp_odd : Odd p := by
     exact prime_gt_two_is_odd hp hp3
-  have hp_cong_1_mod_2 : p % 2 = 1 := by
+  have hp_cong_one_mod_two : p % 2 = 1 := by
     exact n_odd_if_Odd hp_odd
   have h_leg_sym_1_rhs : legendreSym 3 p = 1 := by
-    rw [← legendre_neg_3_p_eq_legendre_p_3]
+    rw [← legendre_neg_three_p_eq_legendre_p_three]
     exact IsSqaure_neg_three_imp_legendre_p_neg_three_eq_one p hp hp2 hs
     case hp2 =>
       exact hp3
     exact hp
-  have h_cong_1_mod_3 : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
+  have h_cong_one_mod_three : (legendreSym 3 p : ZMod 3) = 1 → p % 3 = 1 := by
     intro legendreHp
-    exact legendreSym_3_p_eq_1_imp_p_mod_3_1 p legendreHp
-  have h_cong_1_mod_2_and_3 : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
+    exact legendreSym_three_p_eq_one_imp_p_mod_three_one p legendreHp
+  have h_cong_one_mod_two_and_three : p ≡ 1 [MOD 2] ∧ p ≡ 1 [MOD 3] := by
     rename_i inst _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left, and_self]
     apply And.intro
-    · exact hp_cong_1_mod_2
-    · exact h_cong_1_mod_3
-  have h_coprime_2_3 : Nat.Coprime 2 3 := by
+    · exact hp_cong_one_mod_two
+    · exact h_cong_one_mod_three
+  have h_coprime_two_three : Nat.Coprime 2 3 := by
     rename_i _ _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
-  have h_cong_1_2_mul_3 : p ≡ 1 [MOD 2 * 3] := by
+  have h_cong_one_two_mul_three : p ≡ 1 [MOD 2 * 3] := by
     rw [← Nat.modEq_and_modEq_iff_modEq_mul]
-    apply h_cong_1_mod_2_and_3
-    exact h_coprime_2_3
-  have h_p_cong_mod_6 : p % 6 = 1 := by
+    apply h_cong_one_mod_two_and_three
+    exact h_coprime_two_three
+  have h_p_cong_mod_six : p % 6 = 1 := by
     rename_i _ _
     simp_all only [gt_iff_lt, odd_iff_not_even, forall_true_left]
     unhygienic with_reducible aesop_destruct_products
-    exact h_cong_1_2_mul_3
+    exact h_cong_one_two_mul_three
   apply And.intro
   case left =>
     rw [← p_mod_n_eq_one_iff_p_eq_nk_plus_one']
     norm_num
-    exact h_p_cong_mod_6
+    exact h_p_cong_mod_six
     exact hp
   case right =>
     exact exists_prime_divisor_for_quad_plus_three_poly_eval
