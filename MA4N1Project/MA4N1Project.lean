@@ -136,7 +136,7 @@ theorem non_trivial_case {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) (hp : c
   ⟨p, n, ppp, np, hp123⟩
 
 -- Let p be a prime and f (x) ∈ Z[X] be non-constant. Then f (x) ≡ 0 mod p is solvable for infinitely many p
-lemma two.one {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n := by
+lemma fundamental_lemma {f : ℤ[X]} (hf : f.natDegree ≠ 0) (M : ℕ) : ∃ p n, _root_.Prime p ∧ M ≤ p ∧ (p : ℤ) ∣ f.eval n := by
   have hp : coeff f 0 ≠ 0 ∨ coeff f 0 = 0 := by
     exact ne_or_eq (coeff f 0) 0
   cases hp with
@@ -308,7 +308,7 @@ theorem x_squared_degree_2 : natDegree (X ^ 2 + 1 : ℤ[X]) = 2 := by
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 1)
 theorem exists_pn_st_p_div_fn (hp : (f : ℤ[X]) = X^2 + 1) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
-  apply two.one
+  apply fundamental_lemma
   case hf =>
     rw [hp]
     rw [x_squared_degree_2]
@@ -427,7 +427,7 @@ theorem x_squared_plus_three_degree_two : natDegree (X ^ 2 + 3 : ℤ[X]) = 2 := 
 
 -- Proving that there exists a pair p prime, n such that p | (n^2 + 3)
 theorem exists_prime_div_of_poly_eval (hp : (f : ℤ[X]) = X^2 + 3) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
-  apply two.one
+  apply fundamental_lemma
   case hf =>
     rw [hp]
     rw [x_squared_plus_three_degree_two]
@@ -600,7 +600,7 @@ theorem x_fouth_plus_one_degree_4 : natDegree (X ^ 4 + 1 : ℤ[X]) = 4 := by
 
 -- Proving that there exists a pair p prime, n such that p | (n^4 + 1)
 theorem exists_prime_div_of_x_fouth_poly_eval (hp : (f : ℤ[X]) = X^4 + 1) : ∃ p n, _root_.Prime p ∧ (M : ℕ) ≤ p ∧ (p : ℤ) ∣ f.eval n := by
-  apply two.one
+  apply fundamental_lemma
   case hf =>
     rw [hp]
     rw [x_fouth_plus_one_degree_4]
